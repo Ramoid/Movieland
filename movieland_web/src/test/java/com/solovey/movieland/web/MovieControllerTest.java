@@ -2,9 +2,11 @@ package com.solovey.movieland.web;
 
 
 import com.solovey.movieland.entity.Genre;
+import com.solovey.movieland.entity.enums.Currency;
 import com.solovey.movieland.entity.enums.SortDirection;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.controller.MovieController;
+import com.solovey.movieland.web.util.currency.CurrencyService;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
@@ -55,8 +57,9 @@ public class MovieControllerTest {
         ToDtoConverter mockToDtoConverter = mock(ToDtoConverter.class);
         when(mockToDtoConverter.convertMoviestoMoviesDto(actualMovies)).thenReturn(actualMoviesDto);
 
+        CurrencyService mockCurrencyService = mock(CurrencyService.class);
 
-        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter);
+        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         MvcResult result = mockMvc.perform(get("/v1/movie?rating=asc"))
@@ -83,7 +86,9 @@ public class MovieControllerTest {
         JsonJacksonConverter mockConverter = mock(JsonJacksonConverter.class);
         when(mockConverter.convertRandomMoviesToJson(actualMoviesDto)).thenReturn(expectedJson);
 
-        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter);
+        CurrencyService mockCurrencyService = mock(CurrencyService.class);
+
+        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(get("/v1/movie/random"))
@@ -123,8 +128,9 @@ public class MovieControllerTest {
         JsonJacksonConverter mockConverter = mock(JsonJacksonConverter.class);
         when(mockConverter.convertAllMoviesToJson(actualMoviesDto)).thenReturn(expectedJson);
 
+        CurrencyService mockCurrencyService = mock(CurrencyService.class);
 
-        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter);
+        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(get("/v1/movie/genre/" + ID + "?rating=asc"))
@@ -158,9 +164,14 @@ public class MovieControllerTest {
         JsonJacksonConverter mockConverter = mock(JsonJacksonConverter.class);
         when(mockConverter.convertMovieToJson(actualMovieDto)).thenReturn(expectedJson);
 
+        //CurrencyService mockCurrencyService = mock(CurrencyService.class);
+        CurrencyService currencyService = new CurrencyService(mockConverter);
+        CurrencyService spyCurrencyService = Mockito.spy(currencyService);
+        //when(spyCurrencyService.getCurrencyRate(Currency.USD)).thenReturn(currencyRate);
+        doReturn(currencyRate).when(spyCurrencyService).getCurrencyRate(Currency.USD);
 
 
-        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter);
+        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, spyCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(get("/v1/movie/1?currency=USA"))

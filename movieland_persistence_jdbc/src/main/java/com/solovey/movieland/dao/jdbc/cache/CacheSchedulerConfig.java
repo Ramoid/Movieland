@@ -12,8 +12,10 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 @EnableScheduling
 @PropertySource("classpath:scheduler.properties")
 public class CacheSchedulerConfig {
-   @Bean
-    public TaskScheduler taskScheduler() {
-        return new ConcurrentTaskScheduler(); //single threaded by default
-    } 
+    @Bean
+    public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
+        ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+        threadPoolTaskScheduler.setPoolSize(2);
+        return threadPoolTaskScheduler;
+    }
 }

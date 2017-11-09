@@ -1,9 +1,11 @@
 package com.solovey.movieland.web.controller;
 
 import com.solovey.movieland.entity.Movie;
+import com.solovey.movieland.entity.enums.Currency;
 import com.solovey.movieland.entity.enums.SortDirection;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
+import com.solovey.movieland.web.util.currency.CurrencyService;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,15 +24,16 @@ public class MovieController {
     private MovieService movieService;
     private JsonJacksonConverter jsonConverter;
     private ToDtoConverter toDtoConverter;
+    private CurrencyService currencyService;
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public MovieController(MovieService movieService, JsonJacksonConverter jsonConverter,
-                           ToDtoConverter toDtoConverter) {
+                           ToDtoConverter toDtoConverter, CurrencyService currencyService) {
         this.movieService = movieService;
         this.jsonConverter = jsonConverter;
         this.toDtoConverter = toDtoConverter;
-
+        this.currencyService=currencyService;
     }
 
     @RequestMapping()
@@ -88,6 +91,10 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
 
         Movie movie = movieService.getMovieById(movieId);
+        Currency reqCurrency = Currency.getCurrency(currency);
+        if (reqCurrency != Currency.UAH) {
+            currencyService.convertMoviePrice(movie, currencyService.getCurrencyRate(reqCurrency));
+        }
 
         String jsonMovie = jsonConverter.convertMovieToJson(toDtoConverter.convertMovietoMovieDto(movie));
         log.info("Movie are received. It took {} ms", System.currentTimeMillis() - startTime);
