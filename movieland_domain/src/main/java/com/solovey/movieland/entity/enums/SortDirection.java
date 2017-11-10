@@ -14,7 +14,7 @@ public enum SortDirection {
     public static SortDirection getDirection(String sortString) {
 
         for (SortDirection sort : SortDirection.values()) {
-            if (sort.direction.equals(sortString)) {
+            if (sort.direction.equalsIgnoreCase(sortString)) {
                 return sort;
             }
         }

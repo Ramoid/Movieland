@@ -2,6 +2,7 @@ package com.solovey.movieland.dao.jdbc.config;
 
 import javax.sql.DataSource;
 
+import com.solovey.movieland.dao.jdbc.cache.CacheSchedulerConfig;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -13,7 +14,7 @@ import java.io.IOException;
 
 
 @Configuration
-@Import({QueryConfig.class})
+@Import({QueryConfig.class, CacheSchedulerConfig.class})
 @ComponentScan(basePackages = {"com.solovey.movieland.dao.jdbc"})
 @PropertySource("classpath:database.properties")
 public class DataConfig {

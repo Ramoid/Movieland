@@ -71,8 +71,8 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
 
         Map<String, SortDirection> sortType = new HashMap<>();
-        sortType.put("rating", SortDirection.getDirection(rating.toUpperCase()));
-        sortType.put("price", SortDirection.getDirection(price.toUpperCase()));
+        sortType.put("rating", SortDirection.getDirection(rating));
+        sortType.put("price", SortDirection.getDirection(price));
 
         String jsonMovies = jsonConverter.convertAllMoviesToJson(
                 toDtoConverter.convertMoviestoMoviesDto(movieService.getMoviesByGenreId(genreid, sortType)));
