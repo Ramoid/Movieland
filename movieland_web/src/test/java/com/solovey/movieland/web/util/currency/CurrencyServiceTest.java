@@ -2,11 +2,14 @@ package com.solovey.movieland.web.util.currency;
 
 
 import com.solovey.movieland.entity.Movie;
+import com.solovey.movieland.entity.enums.Currency;
+import com.solovey.movieland.web.util.currency.cache.CurrencyCache;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class CurrencyServiceTest {
     @Test
@@ -24,9 +27,10 @@ public class CurrencyServiceTest {
         movie.setRating(1.1);
         movie.setPicturePath("Test path");
 
-        JsonJacksonConverter mockConverter = mock(JsonJacksonConverter.class);
+        CurrencyCache mockCurrencyCache = mock(CurrencyCache.class);
+        when(mockCurrencyCache.getCurencyRate(Currency.USD)).thenReturn(currencyRate);
 
-        CurrencyService currencyService = new CurrencyService(mockConverter);
+        CurrencyService currencyService = new CurrencyService(mockCurrencyCache);
 
         currencyService.convertMoviePrice(movie, currencyRate);
 

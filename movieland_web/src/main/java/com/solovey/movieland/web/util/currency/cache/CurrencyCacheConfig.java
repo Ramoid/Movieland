@@ -12,15 +12,13 @@ import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:tokencachescheduler.properties")
-public class CacheSchedulerConfig {
-
+@PropertySource("classpath:currency_service.properties")
+public class CurrencyCacheConfig {
 
     //To resolve ${} in @Value
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfig() {
         return new PropertySourcesPlaceholderConfigurer();
     }
-
 
 }

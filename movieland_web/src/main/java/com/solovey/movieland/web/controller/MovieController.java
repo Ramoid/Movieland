@@ -19,13 +19,13 @@ import java.util.Map;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
-@RequestMapping(value="/v1/movie" , method = GET, produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/v1/movie", method = GET, produces = "application/json;charset=UTF-8")
 public class MovieController {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     private MovieService movieService;
     private JsonJacksonConverter jsonConverter;
     private ToDtoConverter toDtoConverter;
     private CurrencyService currencyService;
-    private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Autowired
     public MovieController(MovieService movieService, JsonJacksonConverter jsonConverter,
@@ -33,7 +33,7 @@ public class MovieController {
         this.movieService = movieService;
         this.jsonConverter = jsonConverter;
         this.toDtoConverter = toDtoConverter;
-        this.currencyService=currencyService;
+        this.currencyService = currencyService;
     }
 
     @RequestMapping()
@@ -45,8 +45,8 @@ public class MovieController {
         long startTime = System.currentTimeMillis();
 
         Map<String, SortDirection> sortType = new HashMap<>();
-        sortType.put("rating", SortDirection.getDirection(rating.toUpperCase()));
-        sortType.put("price", SortDirection.getDirection(price.toUpperCase()));
+        sortType.put("rating", SortDirection.getDirection(rating));
+        sortType.put("price", SortDirection.getDirection(price));
 
         String jsonMovies = jsonConverter.convertAllMoviesToJson(
                 toDtoConverter.convertMoviestoMoviesDto(movieService.getAllMovies(sortType)));

@@ -10,7 +10,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:scheduler.properties")
+@PropertySource("classpath:genre_cache_scheduler.properties")
 public class CacheSchedulerConfig {
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler() {

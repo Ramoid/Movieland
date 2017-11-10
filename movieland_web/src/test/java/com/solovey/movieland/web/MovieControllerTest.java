@@ -7,6 +7,7 @@ import com.solovey.movieland.entity.enums.SortDirection;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.controller.MovieController;
 import com.solovey.movieland.web.util.currency.CurrencyService;
+import com.solovey.movieland.web.util.currency.cache.CurrencyCache;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
@@ -153,7 +154,7 @@ public class MovieControllerTest {
                 ",\"yearOfRelease\":3000,\"description\":\"Test Description\",\"rating\":1.1,\"price\":100.00," +
                 "\"picturePath\":\"Test path\",\"genres\":[{\"id\":1,\"name\":\"Ужосы\"}],\"reviews\":[{\"id\":1,\"user\":{\"id\":1,\"nickname\":\"UnknownUser\"},\"text\":\"Review text\"}]}";
 
-        double currencyRate=26;
+        double currencyRate = 26.00;
 
         MovieService mockService = mock(MovieService.class);
         when(mockService.getMovieById(1)).thenReturn(actualMovie);
@@ -164,17 +165,14 @@ public class MovieControllerTest {
         JsonJacksonConverter mockConverter = mock(JsonJacksonConverter.class);
         when(mockConverter.convertMovieToJson(actualMovieDto)).thenReturn(expectedJson);
 
-        //CurrencyService mockCurrencyService = mock(CurrencyService.class);
-        CurrencyService currencyService = new CurrencyService(mockConverter);
-        CurrencyService spyCurrencyService = Mockito.spy(currencyService);
-        //when(spyCurrencyService.getCurrencyRate(Currency.USD)).thenReturn(currencyRate);
-        doReturn(currencyRate).when(spyCurrencyService).getCurrencyRate(Currency.USD);
+        CurrencyService mockCurrencyService = mock(CurrencyService.class);
+        when(mockCurrencyService.getCurrencyRate(Currency.USD)).thenReturn(currencyRate);
 
 
-        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, spyCurrencyService);
+        MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(get("/v1/movie/1?currency=USA"))
+        mockMvc.perform(get("/v1/movie/1?currency=USD"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 //.andExpect(jsonPath("$", hasSize(1)))

@@ -29,11 +29,19 @@ public class GenreCache implements GenreDao {
 
     @Override
     public List<Genre> getAllGenres() {
-        return new ArrayList<Genre>(genresCache);
+        List<Genre> genresCacheCopy = genresCache;
+        List<Genre> genresCacheToReturn= new ArrayList<>();
+        for (Genre genre : genresCacheCopy){
+            Genre copyGenre= new Genre();
+            copyGenre.setId(genre.getId());
+            copyGenre.setName(genre.getName());
+            genresCacheToReturn.add(copyGenre);
+        }
+        return genresCacheToReturn;
     }
 
     @PostConstruct
-    @Scheduled(fixedDelayString = "${interval}", initialDelayString = "${interval}")
+    @Scheduled(fixedDelayString = "${genre_cache_refresh_interval}", initialDelayString = "${genre_cache_refresh_interval}")
     private void invalidate() {
         log.info("Start genre cache refresh");
         long startTime = System.currentTimeMillis();
