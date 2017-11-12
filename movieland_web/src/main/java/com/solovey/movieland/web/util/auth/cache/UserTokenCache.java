@@ -30,20 +30,12 @@ public class UserTokenCache {
         String token;
         for (Map.Entry<String, User> entry : userTokenCache.entrySet()) {
             if (entry.getValue().getId() == user.getId()) {
-                //generate new token and put in the cache in case when present in cache and expired
-                //old token will be removed by garbage collector
-                if (entry.getValue().getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
-                    token = UUID.randomUUID().toString();
-                    user.setTokenGeneratedDateTime(LocalDateTime.now());
-                    userTokenCache.put(token, user);
-                    log.info("Expired token has been found in cache. New Token has been generated. It took {} ms", System.currentTimeMillis() - startTime);
-                } else
                 //extract token from cache if present in cache and is not expired
-                {
+                if (!entry.getValue().getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
                     token = entry.getKey();
+                    log.info("Token has been received from cache. It took {} ms", System.currentTimeMillis() - startTime);
+                    return token;
                 }
-                log.info("Token has been received from cache. It took {} ms", System.currentTimeMillis() - startTime);
-                return token;
             }
         }
 
