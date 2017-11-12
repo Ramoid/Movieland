@@ -23,7 +23,7 @@ import java.util.Map;
 @ContextConfiguration(classes = {DataConfig.class})
 public class JdbcMovieDaoTest {
     @Autowired
-    MovieDao movieDao;
+    private MovieDao movieDao;
 
     @Test
     public void testGelAllMovies() {

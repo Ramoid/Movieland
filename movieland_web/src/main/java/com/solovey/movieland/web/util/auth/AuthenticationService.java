@@ -19,11 +19,11 @@ import java.io.IOException;
 public class AuthenticationService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
-    private UserTokenCache userTokenCache;
+    private final UserTokenCache userTokenCache;
 
-    private UserService userService;
+    private final UserService userService;
 
     @Autowired
     public AuthenticationService(UserTokenCache userTokenCache, UserService userService) {

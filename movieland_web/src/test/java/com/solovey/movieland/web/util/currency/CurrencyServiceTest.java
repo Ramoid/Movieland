@@ -4,7 +4,6 @@ package com.solovey.movieland.web.util.currency;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.entity.enums.Currency;
 import com.solovey.movieland.web.util.currency.cache.CurrencyCache;
-import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

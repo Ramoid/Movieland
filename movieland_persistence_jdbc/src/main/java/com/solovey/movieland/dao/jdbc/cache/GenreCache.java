@@ -20,7 +20,7 @@ public class GenreCache implements GenreDao {
 
     private volatile List<Genre> genresCache;
 
-    private GenreDao genreDao;
+    private final GenreDao genreDao;
 
     @Autowired
     public GenreCache(GenreDao genreDao) {

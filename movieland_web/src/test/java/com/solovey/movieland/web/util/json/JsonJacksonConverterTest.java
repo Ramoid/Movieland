@@ -78,7 +78,7 @@ public class JsonJacksonConverterTest {
     }
 
     private List<MovieDto> createMovieList() {
-        List<MovieDto> movies = new ArrayList<MovieDto>();
+        List<MovieDto> movies = new ArrayList<>();
         MovieDto movie = new MovieDto();
         movie.setMovieId(1);
         movie.setNameRussian("Test russian name");

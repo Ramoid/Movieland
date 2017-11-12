@@ -60,18 +60,18 @@ public class UserTokenCache {
         long startTime = System.currentTimeMillis();
 
         User user = userTokenCache.get(tokenToSearch);
+        if (user == null) {
+            log.info("User was not found for token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
+            throw new UserNotFoundException();
+        }
         if (user.getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
             removeTokenFromCache(tokenToSearch);
             log.info("User has been found for expired token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
             throw new UserNotFoundException();
         }
 
-        if (user == null) {
-            log.info("User was not found for token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
-            throw new UserNotFoundException();
-        } else {
-            log.info("User {} has been  found for token {}. It took {} ms", user.toString(), tokenToSearch, System.currentTimeMillis() - startTime);
-        }
+        log.info("User {} has been  found for token {}. It took {} ms", user.toString(), tokenToSearch, System.currentTimeMillis() - startTime);
+
 
         return user;
     }

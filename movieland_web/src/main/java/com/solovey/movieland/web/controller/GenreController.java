@@ -14,8 +14,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
 @Controller
 @RequestMapping("/v1/genre")
 public class GenreController {
-    private GenreService genreService;
-    private JsonJacksonConverter jsonConverter;
+    private final GenreService genreService;
+    private final JsonJacksonConverter jsonConverter;
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 

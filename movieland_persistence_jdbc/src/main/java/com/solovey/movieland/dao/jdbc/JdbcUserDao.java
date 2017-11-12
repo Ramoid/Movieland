@@ -2,7 +2,6 @@ package com.solovey.movieland.dao.jdbc;
 
 
 import com.solovey.movieland.dao.UserDao;
-import com.solovey.movieland.dao.jdbc.mapper.CountryRowMapper;
 import com.solovey.movieland.entity.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,6 @@ public class JdbcUserDao implements UserDao {
             User user = new User();
             user.setId(sqlRowSet.getInt("user_id"));
             user.setNickname(sqlRowSet.getString("user_name"));
-            user.setPassword(password);
             user.setEmail(email);
             log.info("Finish query extract user {} by passoword and email. It took {} ms", user, System.currentTimeMillis() - startTime);
             return user;

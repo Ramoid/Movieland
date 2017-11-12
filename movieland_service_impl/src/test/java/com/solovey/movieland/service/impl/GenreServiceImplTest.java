@@ -20,7 +20,7 @@ import static org.mockito.Mockito.when;
 
 public class GenreServiceImplTest {
 
-    List<Genre> actualGenres;
+    private List<Genre> actualGenres;
 
     @Before
     public void before() {
@@ -79,7 +79,7 @@ public class GenreServiceImplTest {
         Genre genre = new Genre();
         genre.setId(1);
         genres.add(genre);
-        List<Movie> movies = new ArrayList<Movie>();
+        List<Movie> movies = new ArrayList<>();
         Movie movie = new Movie();
         movie.setMovieId(1);
         movie.setNameRussian("Test russian name");

@@ -18,7 +18,7 @@ import static org.mockito.Mockito.when;
 
 public class CountryServiceImplTest {
 
-    List<Country> actualCountries;
+    private List<Country> actualCountries;
 
     @Before
     public void before() {
@@ -78,7 +78,7 @@ public class CountryServiceImplTest {
         Country country = new Country();
         country.setId(1);
         countries.add(country);
-        List<Movie> movies = new ArrayList<Movie>();
+        List<Movie> movies = new ArrayList<>();
         Movie movie = new Movie();
         movie.setMovieId(1);
         movie.setNameRussian("Test russian name");

@@ -2,7 +2,7 @@ package com.solovey.movieland.web.util.dto;
 
 
 
-public class ReviewDto {
+class ReviewDto {
 
     private int id;
     private UserDto user;

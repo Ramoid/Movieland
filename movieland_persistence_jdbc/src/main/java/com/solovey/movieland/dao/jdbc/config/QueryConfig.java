@@ -4,7 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class QueryConfig {
+class QueryConfig {
 
     @Bean
     public String getAllMoviesSql() {

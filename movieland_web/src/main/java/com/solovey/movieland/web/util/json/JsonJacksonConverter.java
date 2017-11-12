@@ -25,7 +25,7 @@ public class JsonJacksonConverter {
     private ObjectMapper objectMapper = new ObjectMapper();
 
     public Movie parseJsonToMovie(String json) {
-        Movie movie = null;
+        Movie movie;
         try {
             movie = objectMapper.readValue(json, Movie.class);
         } catch (IOException e) {
@@ -56,7 +56,7 @@ public class JsonJacksonConverter {
     public String convertMoviesToJson(List<MovieDto> movies, String... fields) {
         log.info("Start parsing movies to json ");
         long startTime = System.currentTimeMillis();
-        String json = null;
+        String json;
         try {
             Set<String> properties = new HashSet<>(Arrays.asList(fields));
 
@@ -98,7 +98,7 @@ public class JsonJacksonConverter {
     public String convertGenresListToJson(List<Genre> genres) {
         log.info("Start parsing movies to json ");
         long startTime = System.currentTimeMillis();
-        String json = null;
+        String json;
         try {
             json = objectMapper.writer().writeValueAsString(genres);
             log.info("Jenres json is received. It took {} ms", System.currentTimeMillis() - startTime);

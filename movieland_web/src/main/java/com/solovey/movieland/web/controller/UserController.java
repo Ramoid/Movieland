@@ -20,7 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class UserController {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    AuthenticationService authenticationService;
+    private final AuthenticationService authenticationService;
 
     @Autowired
     public UserController(AuthenticationService authenticationService) {
