@@ -14,9 +14,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserDao userDao;
 
-
     @Override
-    public void FindAndEnrichUser(User user) {
-        userDao.FindAndEnrichUser(user);
+    public User extractUser(String password, String email) {
+        return userDao.extractUser(password, email);
     }
 }

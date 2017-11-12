@@ -35,7 +35,7 @@ public class JsonJacksonConverter {
         return movie;
     }
 
-    public Map<Currency, Double> extractCurrencyRates(InputStream jsonStream, Map<Currency, Double> currencyRateMap) {
+    public void extractCurrencyRates(InputStream jsonStream, Map<Currency, Double> currencyRateMap) {
         log.info("Start retriveving currency rates from json ");
         long startTime = System.currentTimeMillis();
 
@@ -45,7 +45,7 @@ public class JsonJacksonConverter {
             currencyRateMap.put(Currency.USD, root.at("/USD/nbu/sell").asDouble());
             currencyRateMap.put(Currency.EUR, root.at("/EUR/nbu/sell").asDouble());
             log.info("CurrencyRates is received from json. It took {} ms", System.currentTimeMillis() - startTime);
-            return currencyRateMap;
+
         } catch (IOException e) {
             log.error("Error retriveving currency rates from json {}", e);
             throw new RuntimeException(e);
@@ -109,5 +109,6 @@ public class JsonJacksonConverter {
         return json;
 
     }
+
 
 }
