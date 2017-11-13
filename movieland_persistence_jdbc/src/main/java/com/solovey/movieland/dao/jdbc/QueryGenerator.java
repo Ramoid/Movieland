@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 
 @Service
-public class QueryGenerator {
+class QueryGenerator {
     public String addSorting(String sql, Map<String, SortDirection> sortType) {
         SortDirection ratingSort = sortType.get("rating");
         if (ratingSort != SortDirection.NOSORT) {

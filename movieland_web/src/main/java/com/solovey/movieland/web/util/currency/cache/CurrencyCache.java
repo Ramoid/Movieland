@@ -29,7 +29,7 @@ public class CurrencyCache {
     @Value("${currency_rate_api_url}")
     private String currencyApiUrl;
 
-    private JsonJacksonConverter jsonConverter;
+    private final JsonJacksonConverter jsonConverter;
 
 
     @Autowired

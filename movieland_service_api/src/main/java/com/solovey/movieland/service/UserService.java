@@ -4,5 +4,5 @@ import com.solovey.movieland.entity.User;
 
 
 public interface UserService {
-    void FindAndEnrichUser(User user);
+    User extractUser(String password,String email);
 }

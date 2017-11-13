@@ -7,20 +7,17 @@ import com.solovey.movieland.entity.enums.SortDirection;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.controller.MovieController;
 import com.solovey.movieland.web.util.currency.CurrencyService;
-import com.solovey.movieland.web.util.currency.cache.CurrencyCache;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import com.solovey.movieland.entity.Movie;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
 import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 //import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
@@ -193,7 +190,7 @@ public class MovieControllerTest {
         genre.setId(1);
         genre.setName("Ужосы");
         genres.add(genre);
-        List<Movie> movies = new ArrayList<Movie>();
+        List<Movie> movies = new ArrayList<>();
         Movie movie = new Movie();
         movie.setMovieId(1);
         movie.setNameRussian("Test russian name");
@@ -214,7 +211,7 @@ public class MovieControllerTest {
         genre.setId(1);
         genre.setName("Ужосы");
         genres.add(genre);
-        List<MovieDto> movies = new ArrayList<MovieDto>();
+        List<MovieDto> movies = new ArrayList<>();
         MovieDto movie = new MovieDto();
         movie.setMovieId(1);
         movie.setNameRussian("Test russian name");

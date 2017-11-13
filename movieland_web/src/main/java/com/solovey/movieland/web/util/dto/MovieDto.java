@@ -3,7 +3,6 @@ package com.solovey.movieland.web.util.dto;
 import com.fasterxml.jackson.annotation.JsonFilter;
 import com.solovey.movieland.entity.Country;
 import com.solovey.movieland.entity.Genre;
-import com.solovey.movieland.entity.Review;
 
 import java.util.List;
 

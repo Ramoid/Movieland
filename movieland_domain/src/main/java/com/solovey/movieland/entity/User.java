@@ -8,7 +8,7 @@ public class User {
     private String nickname;
     private String email;
     private String password;
-    private LocalDateTime tokenDeneratedDateTime;
+    private LocalDateTime tokenGeneratedDateTime;
 
     public int getId() {
         return id;
@@ -42,12 +42,12 @@ public class User {
         this.password = password;
     }
 
-    public LocalDateTime getTokenDeneratedDateTime() {
-        return tokenDeneratedDateTime;
+    public LocalDateTime getTokenGeneratedDateTime() {
+        return tokenGeneratedDateTime;
     }
 
-    public void setTokenDeneratedDateTime(LocalDateTime tokenDeneratedDateTime) {
-        this.tokenDeneratedDateTime = tokenDeneratedDateTime;
+    public void setTokenGeneratedDateTime(LocalDateTime tokenGeneratedDateTime) {
+        this.tokenGeneratedDateTime = tokenGeneratedDateTime;
     }
 
     @Override
@@ -56,7 +56,7 @@ public class User {
                 "id=" + id +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+
                 '}';
     }
 }

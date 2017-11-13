@@ -2,9 +2,7 @@ package com.solovey.movieland.dao.jdbc.cache;
 
 
 import org.springframework.context.annotation.*;
-import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 
