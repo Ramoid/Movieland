@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util.auth;
+package com.solovey.movieland.web.util.auth.entity;
 
 
 public class UserToken {

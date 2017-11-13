@@ -8,7 +8,11 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.entity.Movie;
+import com.solovey.movieland.entity.Review;
+import com.solovey.movieland.entity.User;
 import com.solovey.movieland.entity.enums.Currency;
+import com.solovey.movieland.web.util.auth.entity.LoginRequest;
+import com.solovey.movieland.web.util.auth.exceptions.BadLoginRequestException;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,16 +28,6 @@ public class JsonJacksonConverter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public Movie parseJsonToMovie(String json) {
-        Movie movie;
-        try {
-            movie = objectMapper.readValue(json, Movie.class);
-        } catch (IOException e) {
-            log.error("Error parsing json {} to movie with error {}", json, e);
-            throw new RuntimeException(e);
-        }
-        return movie;
-    }
 
     public void extractCurrencyRates(InputStream jsonStream, Map<Currency, Double> currencyRateMap) {
         log.info("Start retriveving currency rates from json ");
@@ -53,7 +47,7 @@ public class JsonJacksonConverter {
 
     }
 
-    public String convertMoviesToJson(List<MovieDto> movies, String... fields) {
+    String convertMoviesToJson(List<MovieDto> movies, String... fields) {
         log.info("Start parsing movies to json ");
         long startTime = System.currentTimeMillis();
         String json;
@@ -110,5 +104,20 @@ public class JsonJacksonConverter {
 
     }
 
+    public LoginRequest parseLoginJson(String loginJson) {
+        log.info("Start parsing jsonLogin ");
+        long startTime = System.currentTimeMillis();
+        try {
+            LoginRequest loginRequest = objectMapper.readValue(loginJson, LoginRequest.class);
+            log.info("Finish parsing jsonLogin {}. It took {} ms", loginRequest.toString(), System.currentTimeMillis() - startTime);
+            return loginRequest;
+        } catch (IOException e) {
+            log.error("Error parsing incoming json{} exception {}", loginJson, e);
+            throw new BadLoginRequestException();
+        }
+
+    }
+
+    
 
 }

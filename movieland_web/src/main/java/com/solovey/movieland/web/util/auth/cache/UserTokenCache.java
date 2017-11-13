@@ -3,6 +3,7 @@ package com.solovey.movieland.web.util.auth.cache;
 
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.web.util.auth.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.util.auth.exceptions.UserTokenExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -52,7 +53,14 @@ public class UserTokenCache {
 
         User removedUser = userTokenCache.remove(tokenToRemove);
 
-        log.info("User {} has been removed from cache. It took {} ms", removedUser.toString(), System.currentTimeMillis() - startTime);
+        if (removedUser!=null) {
+            log.info("User {} has been removed from cache. It took {} ms", removedUser.toString(), System.currentTimeMillis() - startTime);
+        }
+        else{
+            log.info("Token {} does not exist in cache. It took {} ms", tokenToRemove, System.currentTimeMillis() - startTime);
+            //may be raise TokenNotFoundException
+        }
+
     }
 
     public User findUserByToken(String tokenToSearch) throws UserNotFoundException {
@@ -66,8 +74,8 @@ public class UserTokenCache {
         }
         if (user.getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
             removeTokenFromCache(tokenToSearch);
-            log.info("User has been found for expired token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
-            throw new UserNotFoundException();
+            log.info("User has been found with expired token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
+            throw new UserTokenExpiredException();
         }
 
         log.info("User {} has been  found for token {}. It took {} ms", user.toString(), tokenToSearch, System.currentTimeMillis() - startTime);

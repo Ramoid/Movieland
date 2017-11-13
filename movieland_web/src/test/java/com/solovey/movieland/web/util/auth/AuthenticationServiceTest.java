@@ -4,6 +4,9 @@ package com.solovey.movieland.web.util.auth;
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.service.UserService;
 import com.solovey.movieland.web.util.auth.cache.UserTokenCache;
+import com.solovey.movieland.web.util.auth.entity.LoginRequest;
+import com.solovey.movieland.web.util.auth.entity.UserToken;
+import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +34,10 @@ public class AuthenticationServiceTest {
         UserTokenCache mockUserTokenCache = mock(UserTokenCache.class);
         when(mockUserTokenCache.getUserToken(user)).thenReturn(token);
 
-        AuthenticationService authenticationService = new AuthenticationService(mockUserTokenCache, mockUserService);
+        JsonJacksonConverter mockJsonJacksonConverter = mock(JsonJacksonConverter.class);
+        when(mockJsonJacksonConverter.parseLoginJson(inputJson)).thenReturn(new LoginRequest(email,password));
+
+        AuthenticationService authenticationService = new AuthenticationService(mockUserTokenCache, mockUserService,mockJsonJacksonConverter);
 
         UserToken userToken = authenticationService.performLogin(inputJson);
 
