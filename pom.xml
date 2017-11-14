@@ -41,6 +41,14 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- jBCrypt -->
+            <dependency>
+                <groupId>de.svenkubiak</groupId>
+                <artifactId>jBCrypt</artifactId>
+                <version>0.4.1</version>
+
+            </dependency>
+
             <!-- Spring -->
             <dependency>
                 <groupId>org.springframework</groupId>

@@ -1,9 +1,7 @@
 package com.solovey.movieland.web.util.auth.exceptions;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
-
-@ResponseStatus(value = HttpStatus.BAD_REQUEST,
-        reason = "User token expired.")
 public class UserTokenExpiredException extends RuntimeException {
+    public UserTokenExpiredException(){
+        super("User token expired.");
+    }
 }

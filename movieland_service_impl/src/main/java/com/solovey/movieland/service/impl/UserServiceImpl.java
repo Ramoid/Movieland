@@ -7,6 +7,8 @@ import com.solovey.movieland.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -15,7 +17,7 @@ public class UserServiceImpl implements UserService {
     private UserDao userDao;
 
     @Override
-    public User extractUser(String password, String email) {
-        return userDao.extractUser(password, email);
+    public Optional<User> extractUser(String email) {
+        return userDao.extractUser( email);
     }
 }

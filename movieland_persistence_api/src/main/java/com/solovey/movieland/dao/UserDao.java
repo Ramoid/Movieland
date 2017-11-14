@@ -2,6 +2,8 @@ package com.solovey.movieland.dao;
 
 import com.solovey.movieland.entity.User;
 
+import java.util.Optional;
+
 public interface UserDao {
-    User extractUser(String password,String email);
+    Optional<User> extractUser(String email);
 }

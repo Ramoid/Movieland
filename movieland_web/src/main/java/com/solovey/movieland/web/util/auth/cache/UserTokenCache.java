@@ -2,6 +2,7 @@ package com.solovey.movieland.web.util.auth.cache;
 
 
 import com.solovey.movieland.entity.User;
+import com.solovey.movieland.web.util.auth.entity.TokenCacheUser;
 import com.solovey.movieland.web.util.auth.exceptions.UserNotFoundException;
 import com.solovey.movieland.web.util.auth.exceptions.UserTokenExpiredException;
 import org.slf4j.Logger;
@@ -23,14 +24,14 @@ public class UserTokenCache {
     @Value("${token_strorage_time_mins}")
     private int tokenStorageTime;
 
-    private Map<String, User> userTokenCache = new ConcurrentHashMap<>();
+    private Map<String, TokenCacheUser> userTokenCache = new ConcurrentHashMap<>();
 
     public String getUserToken(User user) {
         log.info("Start getting token");
         long startTime = System.currentTimeMillis();
         String token;
-        for (Map.Entry<String, User> entry : userTokenCache.entrySet()) {
-            if (entry.getValue().getId() == user.getId()) {
+        for (Map.Entry<String, TokenCacheUser> entry : userTokenCache.entrySet()) {
+            if (entry.getValue().getUser().getId() == user.getId()) {
                 //extract token from cache if present in cache and is not expired
                 if (!entry.getValue().getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
                     token = entry.getKey();
@@ -41,8 +42,10 @@ public class UserTokenCache {
         }
 
         token = UUID.randomUUID().toString();
-        user.setTokenGeneratedDateTime(LocalDateTime.now());
-        userTokenCache.put(token, user);
+        TokenCacheUser tokenCacheUser = new TokenCacheUser();
+        tokenCacheUser.setTokenGeneratedDateTime(LocalDateTime.now());
+        tokenCacheUser.setUser(user);
+        userTokenCache.put(token, tokenCacheUser);
         log.info("Token has been generated. It took {} ms", System.currentTimeMillis() - startTime);
         return token;
     }
@@ -51,7 +54,7 @@ public class UserTokenCache {
         log.info("Start removing token {}" + tokenToRemove);
         long startTime = System.currentTimeMillis();
 
-        User removedUser = userTokenCache.remove(tokenToRemove);
+        User removedUser = userTokenCache.remove(tokenToRemove).getUser();
 
         if (removedUser!=null) {
             log.info("User {} has been removed from cache. It took {} ms", removedUser.toString(), System.currentTimeMillis() - startTime);
@@ -67,21 +70,21 @@ public class UserTokenCache {
         log.info("Start searching user");
         long startTime = System.currentTimeMillis();
 
-        User user = userTokenCache.get(tokenToSearch);
-        if (user == null) {
+        TokenCacheUser tokenCacheUser = userTokenCache.get(tokenToSearch);
+        if (tokenCacheUser == null) {
             log.info("User was not found for token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
             throw new UserNotFoundException();
         }
-        if (user.getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
+        if (tokenCacheUser.getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
             removeTokenFromCache(tokenToSearch);
             log.info("User has been found with expired token {}. It took {} ms", tokenToSearch, System.currentTimeMillis() - startTime);
             throw new UserTokenExpiredException();
         }
 
-        log.info("User {} has been  found for token {}. It took {} ms", user.toString(), tokenToSearch, System.currentTimeMillis() - startTime);
+        log.info("User {} has been  found for token {}. It took {} ms", tokenCacheUser.getUser(), tokenToSearch, System.currentTimeMillis() - startTime);
 
 
-        return user;
+        return tokenCacheUser.getUser();
     }
 
     @Scheduled(fixedDelayString = "${token_garbage_collector_interval}", initialDelayString = "${token_garbage_collector_interval}")
@@ -89,11 +92,11 @@ public class UserTokenCache {
         log.info("Start token cache garbage collector");
         long startTime = System.currentTimeMillis();
 
-        for (Iterator<User> iter = userTokenCache.values().iterator(); iter.hasNext(); ) {
-            User user = iter.next();
-            if (user.getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
+        for (Iterator<TokenCacheUser> iter = userTokenCache.values().iterator(); iter.hasNext(); ) {
+            TokenCacheUser tokenCacheUser = iter.next();
+            if (tokenCacheUser.getTokenGeneratedDateTime().isBefore(LocalDateTime.now().minusMinutes(tokenStorageTime))) {
                 iter.remove();
-                log.info("User {} removed from cache", user.toString());
+                log.info("User {} removed from cache", tokenCacheUser.getUser().getEmail());
             }
         }
 

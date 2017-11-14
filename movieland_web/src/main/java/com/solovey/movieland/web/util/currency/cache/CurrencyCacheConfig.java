@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:currency_service.properties")
+@PropertySource("classpath:currency.service.properties")
 public class CurrencyCacheConfig {
 
     //To resolve ${} in @Value

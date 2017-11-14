@@ -1,28 +1,26 @@
 package com.solovey.movieland.web.util.auth;
 
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.service.UserService;
 import com.solovey.movieland.web.util.auth.cache.UserTokenCache;
 import com.solovey.movieland.web.util.auth.entity.LoginRequest;
 import com.solovey.movieland.web.util.auth.entity.UserToken;
-import com.solovey.movieland.web.util.auth.exceptions.BadLoginRequestException;
+import com.solovey.movieland.web.util.auth.exceptions.InvalidLoginPasswordException;
 import com.solovey.movieland.web.util.auth.exceptions.UserNotFoundException;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
+import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
+import java.util.Optional;
 
 @Service
 public class AuthenticationService {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
-    private final ObjectMapper objectMapper = new ObjectMapper();
 
     private final UserTokenCache userTokenCache;
 
@@ -38,19 +36,21 @@ public class AuthenticationService {
     }
 
     public UserToken performLogin(String loginJson) throws UserNotFoundException {
-        log.info("Starting login user {}", loginJson);
+        log.info("Starting login user ");
         long startTime = System.currentTimeMillis();
-
         LoginRequest loginRequest = jsonJacksonConverter.parseLoginJson(loginJson);
-        User user = userService.extractUser(loginRequest.getPassword(), loginRequest.getEmail());
-        if (user == null) {
-            throw new UserNotFoundException();
+        Optional<User> userOptional = userService.extractUser(loginRequest.getEmail());
+
+        User user = userOptional.orElseThrow(InvalidLoginPasswordException::new);
+
+        if (!BCrypt.checkpw(loginRequest.getPassword(), user.getPassword())) {
+            throw new InvalidLoginPasswordException();
         }
+
         String token = userTokenCache.getUserToken(user);
         UserToken userToken = new UserToken(token, user.getNickname());
         log.info("Successful signing up for user {}. It took {} ms", user.getEmail(), System.currentTimeMillis() - startTime);
         return userToken;
-
 
     }
 

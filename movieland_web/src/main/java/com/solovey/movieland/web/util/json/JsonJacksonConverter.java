@@ -109,15 +109,33 @@ public class JsonJacksonConverter {
         long startTime = System.currentTimeMillis();
         try {
             LoginRequest loginRequest = objectMapper.readValue(loginJson, LoginRequest.class);
-            log.info("Finish parsing jsonLogin {}. It took {} ms", loginRequest.toString(), System.currentTimeMillis() - startTime);
+            log.info("Finish parsing jsonLogin {}. It took {} ms", loginRequest.getEmail(), System.currentTimeMillis() - startTime);
             return loginRequest;
         } catch (IOException e) {
-            log.error("Error parsing incoming json{} exception {}", loginJson, e);
+            log.error("Error parsing incoming json exception {}", e);
             throw new BadLoginRequestException();
         }
 
     }
 
-    
+    public Review parseJsonToReview(String jsonReview, int userId) {
+
+        try {
+            JsonNode root = objectMapper.readTree(jsonReview);
+            Review review = new Review();
+            User user = new User();
+            user.setId(userId);
+            review.setUser(user);
+            review.setMovieId(root.at("/movieId").asInt());
+            review.setText(root.at("/text").asText());
+            return review;
+        } catch (IOException e) {
+            log.error("Error parsing incoming json{} exception {}", jsonReview, e);
+            throw new RuntimeException();
+        }
+
+
+    }
+
 
 }

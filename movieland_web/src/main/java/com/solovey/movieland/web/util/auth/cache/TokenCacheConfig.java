@@ -6,7 +6,7 @@ import org.springframework.context.annotation.PropertySource;
 
 
 @Configuration
-@PropertySource("classpath:token_cache.properties")
+@PropertySource("classpath:token.cache.properties")
 public class TokenCacheConfig {
 
 

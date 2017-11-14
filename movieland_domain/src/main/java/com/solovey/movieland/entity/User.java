@@ -8,7 +8,6 @@ public class User {
     private String nickname;
     private String email;
     private String password;
-    private LocalDateTime tokenGeneratedDateTime;
 
     public int getId() {
         return id;
@@ -42,13 +41,6 @@ public class User {
         this.password = password;
     }
 
-    public LocalDateTime getTokenGeneratedDateTime() {
-        return tokenGeneratedDateTime;
-    }
-
-    public void setTokenGeneratedDateTime(LocalDateTime tokenGeneratedDateTime) {
-        this.tokenGeneratedDateTime = tokenGeneratedDateTime;
-    }
 
     @Override
     public String toString() {

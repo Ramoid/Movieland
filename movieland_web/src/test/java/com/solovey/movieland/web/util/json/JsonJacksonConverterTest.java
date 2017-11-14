@@ -72,7 +72,17 @@ public class JsonJacksonConverterTest {
 
     }
 
-    
+    @Test
+    public void testParseJsonToReview() {
+        String actualJson = "{\"movieId\" : 1,\"text\" : \"Очень понравилось!\"}";
+        int userId = 1;
+        JsonJacksonConverter converter = new JsonJacksonConverter();
+        Review review = converter.parseJsonToReview(actualJson, userId);
+        assertEquals(1, review.getMovieId());
+        assertEquals("Очень понравилось!", review.getText());
+        assertEquals(1, review.getUser().getId());
+
+    }
 
     private List<MovieDto> createMovieList() {
         List<MovieDto> movies = new ArrayList<>();

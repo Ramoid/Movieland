@@ -9,6 +9,8 @@ import com.solovey.movieland.web.util.auth.entity.UserToken;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.junit.Test;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -19,17 +21,19 @@ public class AuthenticationServiceTest {
 
         String inputJson = "{\"email\":\"Rambo@gmail.com\",\"password\":\"testPass\"}";
         String email = "Rambo@gmail.com";
-        String password = "testPass";
+        String password="testPass";
+        String encryptedPassword = "$2a$10$Euy7ToIgeY7tOyGELIu00eFTDsG2HLRD2XJdnA/1jSOWvct6hX9Na";
         String token = "666token666";
+
 
         User user = new User();
         user.setNickname("Rambo");
         user.setEmail(email);
-        user.setPassword(password);
+        user.setPassword(encryptedPassword);
         user.setId(1);
 
         UserService mockUserService = mock(UserService.class);
-        when(mockUserService.extractUser(password, email)).thenReturn(user);
+        when(mockUserService.extractUser(email)).thenReturn(Optional.of(user));
 
         UserTokenCache mockUserTokenCache = mock(UserTokenCache.class);
         when(mockUserTokenCache.getUserToken(user)).thenReturn(token);
