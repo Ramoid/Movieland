@@ -1,13 +1,16 @@
-package com.solovey.movieland.web;
+package com.solovey.movieland.web.util;
 
 
-import com.solovey.movieland.web.util.auth.AuthenticationService;
-import com.solovey.movieland.web.util.auth.exceptions.UserNotFoundException;
-import com.solovey.movieland.web.util.auth.exceptions.UserTokenExpiredException;
+import com.solovey.movieland.entity.User;
+import com.solovey.movieland.web.util.security.AuthenticationService;
+import com.solovey.movieland.web.util.security.SecurityHttpRequestWrapper;
+import com.solovey.movieland.web.util.security.entity.PrincipalUser;
+import com.solovey.movieland.web.util.security.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.util.security.exceptions.UserTokenExpiredException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +18,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
 
-public class LoggerInterceptor extends HandlerInterceptorAdapter {
+public class RequestInterceptor extends HandlerInterceptorAdapter {
+    private final Logger log = LoggerFactory.getLogger(getClass());
     @Autowired
     private AuthenticationService authenticationService;
 
@@ -26,14 +30,20 @@ public class LoggerInterceptor extends HandlerInterceptorAdapter {
         String username;
         if (uuid != null) {
             try {
-                username = authenticationService.recognizeUser(uuid).getEmail();
+                User user = authenticationService.recognizeUser(uuid);
+                username = user.getEmail();
+                ((SecurityHttpRequestWrapper) request).setUserPrincipal(new PrincipalUser(user.getEmail(), user.getId()));
+
             } catch (UserNotFoundException e) {
                 username = "hacker/expiredUser";
+                log.warn("Cannot find user with uuid {}", uuid);
             } catch (UserTokenExpiredException e) {
                 username = "expiredUser";
+                log.warn("Expired uuid {}", uuid);
             }
         } else {
             username = "guest";
+            log.info("Request with empty uuid", uuid);
         }
 
         MDC.put("requestId", UUID.randomUUID().toString());

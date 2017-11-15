@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util.auth.exceptions;
+package com.solovey.movieland.web.util.security.exceptions;
 
 public class InvalidLoginPasswordException extends RuntimeException {
     public InvalidLoginPasswordException() {

@@ -3,7 +3,7 @@ package com.solovey.movieland.dao.jdbc;
 import com.solovey.movieland.dao.jdbc.config.DataConfig;
 import com.solovey.movieland.dao.MovieDao;
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.entity.enums.SortDirection;
+import com.solovey.movieland.dao.enums.SortDirection;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 

@@ -78,7 +78,7 @@ class QueryConfig {
     }
 
     @Bean
-    public String getuserByEmail() {
+    public String getUserByEmail() {
         return "select u.user_id,u.user_name,u.password,u.email " +
                 "from movies.users u " +
                 "where u.email=?";
@@ -88,5 +88,13 @@ class QueryConfig {
     public String insertReviewSql(){
         return "insert into movies.review(movie_id,user_id,rtext) " +
                 "values(?,?,?)";
+    }
+
+    @Bean
+    public String gerUserRolesSql(){
+        return "select role_name " +
+                "from movies.user_roles u, movies.roles r " +
+                "where r.role_id=u.role_id" +
+                "      and user_id=?";
     }
 }

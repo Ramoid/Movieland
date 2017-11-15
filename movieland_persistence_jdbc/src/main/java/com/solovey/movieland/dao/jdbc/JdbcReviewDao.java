@@ -23,6 +23,9 @@ public class JdbcReviewDao implements ReviewDao {
     @Autowired
     private String getReviewsByMovieIdSql;
 
+    @Autowired
+    private String insertReviewSql;
+
     @Override
     public List<Review> getReviewsByMovieId(int movieId) {
         log.info("Start query to get review by movie  from DB");
@@ -30,6 +33,16 @@ public class JdbcReviewDao implements ReviewDao {
         List<Review> reviews = jdbcTemplate.query(getReviewsByMovieIdSql, REVIEW_ROW_MAPPER, movieId);
         log.info("Finish query to get review by movie from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return reviews;
+    }
+
+    @Override
+    public void saveReviewToDb(Review review) {
+        log.info("Start inserting review {} into DB", review.toString());
+        long startTime = System.currentTimeMillis();
+        jdbcTemplate.update(insertReviewSql, review.getMovieId(),
+                review.getUser().getId(),review.getText());
+        log.info("Finish inserting review into DB. It took {} ms", System.currentTimeMillis() - startTime);
+
     }
 
 

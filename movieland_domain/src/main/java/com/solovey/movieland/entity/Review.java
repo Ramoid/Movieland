@@ -6,6 +6,7 @@ public class Review {
     private int id;
     private User user;
     private String text;
+    private int movieId;
 
     public int getId() {
         return id;
@@ -29,6 +30,14 @@ public class Review {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public int getMovieId() {
+        return movieId;
+    }
+
+    public void setMovieId(int movieId) {
+        this.movieId = movieId;
     }
 
     @Override

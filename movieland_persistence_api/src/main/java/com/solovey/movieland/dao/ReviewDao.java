@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface ReviewDao {
     List<Review> getReviewsByMovieId(int movieId);
-
+    void saveReviewToDb(Review review);
 }

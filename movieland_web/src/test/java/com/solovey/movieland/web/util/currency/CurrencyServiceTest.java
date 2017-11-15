@@ -2,7 +2,7 @@ package com.solovey.movieland.web.util.currency;
 
 
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.entity.enums.Currency;
+import com.solovey.movieland.dao.enums.Currency;
 import com.solovey.movieland.web.util.currency.cache.CurrencyCache;
 import org.junit.Test;
 

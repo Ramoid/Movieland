@@ -1,6 +1,6 @@
 package com.solovey.movieland.web.util.currency.cache;
 
-import com.solovey.movieland.entity.enums.Currency;
+import com.solovey.movieland.dao.enums.Currency;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.bouncycastle.jce.provider.BouncyCastleProvider;
 import org.slf4j.Logger;

@@ -2,8 +2,8 @@ package com.solovey.movieland.web;
 
 
 import com.solovey.movieland.entity.Genre;
-import com.solovey.movieland.entity.enums.Currency;
-import com.solovey.movieland.entity.enums.SortDirection;
+import com.solovey.movieland.dao.enums.Currency;
+import com.solovey.movieland.dao.enums.SortDirection;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.controller.MovieController;
 import com.solovey.movieland.web.util.currency.CurrencyService;

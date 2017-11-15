@@ -2,7 +2,7 @@ package com.solovey.movieland.web.util.currency;
 
 
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.entity.enums.Currency;
+import com.solovey.movieland.dao.enums.Currency;
 import com.solovey.movieland.web.util.currency.cache.CurrencyCache;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class CurrencyService {
         log.info("Start getting CurrencyRate for {}", currency.getCurrency());
         long startTime = System.currentTimeMillis();
         double rate = currencyCache.getCurencyRate(currency);
-        log.info("Currency Rate for {} is received = {}. It took {} ms", currency.getCurrency(), rate, System.currentTimeMillis() - startTime);
+        log.info("Currency Rate for {} is received  It took {} ms", currency.getCurrency(),  System.currentTimeMillis() - startTime);
         return rate;
     }
 
