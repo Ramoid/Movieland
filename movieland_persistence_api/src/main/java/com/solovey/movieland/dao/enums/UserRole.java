@@ -22,7 +22,7 @@ public enum UserRole {
         //return UserRole.UAH;
     }
 
-    public String getCurrency(){
+    public String getRole(){
         return  role;
     }
 }
