@@ -8,7 +8,11 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.entity.Movie;
+import com.solovey.movieland.entity.Review;
+import com.solovey.movieland.entity.User;
 import com.solovey.movieland.entity.enums.Currency;
+import com.solovey.movieland.web.util.auth.entity.LoginRequest;
+import com.solovey.movieland.web.util.auth.exceptions.BadLoginRequestException;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,18 +28,8 @@ public class JsonJacksonConverter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public Movie parseJsonToMovie(String json) {
-        Movie movie = null;
-        try {
-            movie = objectMapper.readValue(json, Movie.class);
-        } catch (IOException e) {
-            log.error("Error parsing json {} to movie with error {}", json, e);
-            throw new RuntimeException(e);
-        }
-        return movie;
-    }
 
-    public Map<Currency, Double> extractCurrencyRates(InputStream jsonStream, Map<Currency, Double> currencyRateMap) {
+    public void extractCurrencyRates(InputStream jsonStream, Map<Currency, Double> currencyRateMap) {
         log.info("Start retriveving currency rates from json ");
         long startTime = System.currentTimeMillis();
 
@@ -45,7 +39,7 @@ public class JsonJacksonConverter {
             currencyRateMap.put(Currency.USD, root.at("/USD/nbu/sell").asDouble());
             currencyRateMap.put(Currency.EUR, root.at("/EUR/nbu/sell").asDouble());
             log.info("CurrencyRates is received from json. It took {} ms", System.currentTimeMillis() - startTime);
-            return currencyRateMap;
+
         } catch (IOException e) {
             log.error("Error retriveving currency rates from json {}", e);
             throw new RuntimeException(e);
@@ -53,10 +47,10 @@ public class JsonJacksonConverter {
 
     }
 
-    public String convertMoviesToJson(List<MovieDto> movies, String... fields) {
+    String convertMoviesToJson(List<MovieDto> movies, String... fields) {
         log.info("Start parsing movies to json ");
         long startTime = System.currentTimeMillis();
-        String json = null;
+        String json;
         try {
             Set<String> properties = new HashSet<>(Arrays.asList(fields));
 
@@ -98,7 +92,7 @@ public class JsonJacksonConverter {
     public String convertGenresListToJson(List<Genre> genres) {
         log.info("Start parsing movies to json ");
         long startTime = System.currentTimeMillis();
-        String json = null;
+        String json;
         try {
             json = objectMapper.writer().writeValueAsString(genres);
             log.info("Jenres json is received. It took {} ms", System.currentTimeMillis() - startTime);
@@ -109,5 +103,39 @@ public class JsonJacksonConverter {
         return json;
 
     }
+
+    public LoginRequest parseLoginJson(String loginJson) {
+        log.info("Start parsing jsonLogin ");
+        long startTime = System.currentTimeMillis();
+        try {
+            LoginRequest loginRequest = objectMapper.readValue(loginJson, LoginRequest.class);
+            log.info("Finish parsing jsonLogin {}. It took {} ms", loginRequest.getEmail(), System.currentTimeMillis() - startTime);
+            return loginRequest;
+        } catch (IOException e) {
+            log.error("Error parsing incoming json exception {}", e);
+            throw new BadLoginRequestException();
+        }
+
+    }
+
+    public Review parseJsonToReview(String jsonReview, int userId) {
+
+        try {
+            JsonNode root = objectMapper.readTree(jsonReview);
+            Review review = new Review();
+            User user = new User();
+            user.setId(userId);
+            review.setUser(user);
+            review.setMovieId(root.at("/movieId").asInt());
+            review.setText(root.at("/text").asText());
+            return review;
+        } catch (IOException e) {
+            log.error("Error parsing incoming json{} exception {}", jsonReview, e);
+            throw new RuntimeException();
+        }
+
+
+    }
+
 
 }

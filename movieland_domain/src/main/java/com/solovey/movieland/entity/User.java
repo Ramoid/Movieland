@@ -8,7 +8,6 @@ public class User {
     private String nickname;
     private String email;
     private String password;
-    private LocalDateTime tokenDeneratedDateTime;
 
     public int getId() {
         return id;
@@ -42,13 +41,6 @@ public class User {
         this.password = password;
     }
 
-    public LocalDateTime getTokenDeneratedDateTime() {
-        return tokenDeneratedDateTime;
-    }
-
-    public void setTokenDeneratedDateTime(LocalDateTime tokenDeneratedDateTime) {
-        this.tokenDeneratedDateTime = tokenDeneratedDateTime;
-    }
 
     @Override
     public String toString() {
@@ -56,7 +48,7 @@ public class User {
                 "id=" + id +
                 ", nickname='" + nickname + '\'' +
                 ", email='" + email + '\'' +
-                ", password='" + password + '\'' +
+
                 '}';
     }
 }

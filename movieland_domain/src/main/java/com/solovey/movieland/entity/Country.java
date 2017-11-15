@@ -1,8 +1,6 @@
 package com.solovey.movieland.entity;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 public class Country {
     private int id;
     private String name;

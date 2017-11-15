@@ -15,7 +15,8 @@
 
         </rollingPolicy>
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 
@@ -26,7 +27,7 @@
             <onMismatch>ACCEPT</onMismatch>
         </filter>-->
         <encoder>
-            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>
 

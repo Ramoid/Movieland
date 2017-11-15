@@ -17,7 +17,7 @@ import java.math.RoundingMode;
 public class CurrencyService {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private CurrencyCache currencyCache;
+    private final CurrencyCache currencyCache;
 
     @Autowired
     public CurrencyService(CurrencyCache currencyCache) {

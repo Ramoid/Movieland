@@ -3,20 +3,18 @@ package com.solovey.movieland.dao.jdbc;
 import com.solovey.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.solovey.movieland.dao.jdbc.mapper.RandomMovieRowMapper;
 import com.solovey.movieland.dao.MovieDao;
-import com.solovey.movieland.entity.Country;
-import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.entity.enums.SortDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Map;
 
-@Service
+@Repository
 public class JdbcMovieDao implements MovieDao {
     private final Logger log = LoggerFactory.getLogger(getClass());
 

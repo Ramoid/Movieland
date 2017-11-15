@@ -32,7 +32,7 @@ public class DataConfig {
     private String password;
 
     @Bean
-    public BasicDataSource dataSource() throws IOException {
+    public BasicDataSource dataSource()  {
 
         BasicDataSource ds = new BasicDataSource();
         ds.setDriverClassName(driverClassName);

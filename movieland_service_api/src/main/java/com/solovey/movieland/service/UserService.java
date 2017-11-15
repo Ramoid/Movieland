@@ -2,7 +2,9 @@ package com.solovey.movieland.service;
 
 import com.solovey.movieland.entity.User;
 
+import java.util.Optional;
+
 
 public interface UserService {
-    void FindAndEnrichUser(User user);
+    Optional<User> extractUser(String email);
 }

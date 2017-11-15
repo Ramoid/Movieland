@@ -1,7 +1,6 @@
 package com.solovey.movieland.dao.jdbc.mapper;
 
 import com.solovey.movieland.entity.Genre;
-import com.solovey.movieland.entity.Movie;
 import org.junit.Test;
 
 import java.sql.ResultSet;
