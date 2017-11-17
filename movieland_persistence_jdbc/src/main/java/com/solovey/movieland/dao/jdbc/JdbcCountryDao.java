@@ -24,7 +24,7 @@ public class JdbcCountryDao implements CountryDao {
     private String getAllCountriesSql;
 
     @Override
-    public List<Country> getAllCountries() {
+    public List<Country> getAll() {
         log.info("Start query to get all countries from DB");
         long startTime = System.currentTimeMillis();
 

@@ -3,8 +3,6 @@ package com.solovey.movieland.web.controller;
 
 import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.service.GenreService;
-import com.solovey.movieland.web.controller.GenreController;
-import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,7 +30,7 @@ public class GenreControllerTest {
         String expectedJson = "[{\"id\":1,\"name\":\"Ужосы\"}]";
 
         GenreService mockService = mock(GenreService.class);
-        when(mockService.getAllGenres()).thenReturn(actualGenres);
+        when(mockService.getAll()).thenReturn(actualGenres);
 
         GenreController controller = new GenreController(mockService);
         MockMvc mockMvc = standaloneSetup(controller).build();

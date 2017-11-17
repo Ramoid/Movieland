@@ -28,7 +28,7 @@ public class GenreCache implements GenreDao {
     }
 
     @Override
-    public List<Genre> getAllGenres() {
+    public List<Genre> getAll() {
         List<Genre> genresCacheCopy = genresCache;
         List<Genre> genresCacheToReturn= new ArrayList<>();
         for (Genre genre : genresCacheCopy){
@@ -45,7 +45,7 @@ public class GenreCache implements GenreDao {
     private void invalidate() {
         log.info("Start genre cache refresh");
         long startTime = System.currentTimeMillis();
-        genresCache = genreDao.getAllGenres();
+        genresCache = genreDao.getAll();
         log.info("Genre chache has been reloaded. It took {} ms", System.currentTimeMillis() - startTime);
     }
 

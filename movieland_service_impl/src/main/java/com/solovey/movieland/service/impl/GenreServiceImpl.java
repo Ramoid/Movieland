@@ -23,13 +23,13 @@ public class GenreServiceImpl implements GenreService {
     }
 
     @Override
-    public List<Genre> getAllGenres() {
-        return genreDao.getAllGenres();
+    public List<Genre> getAll() {
+        return genreDao.getAll();
     }
 
     @Override
     public void enrichMoviesWithGenres(List<Movie> movies) {
-        Map<Integer, String> genresMap = genreDao.getAllGenres().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
+        Map<Integer, String> genresMap = genreDao.getAll().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 
         for (Movie movie : movies) {
             for (Genre movieGenre : movie.getGenres()) {
@@ -40,7 +40,7 @@ public class GenreServiceImpl implements GenreService {
 
     @Override
     public void enrichMovieWithGenres(Movie movie) {
-        Map<Integer, String> genresMap = genreDao.getAllGenres().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
+        Map<Integer, String> genresMap = genreDao.getAll().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 
         for (Genre movieGenre : movie.getGenres()) {
             movieGenre.setName(genresMap.get(movieGenre.getId()));

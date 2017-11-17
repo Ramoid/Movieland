@@ -30,7 +30,7 @@ public class CountryController {
     public List<Country> getAllCountries() {
         log.info("Sending request to get all countries");
         long startTime = System.currentTimeMillis();
-        List<Country> countries = countryService.getAllGCountries();
+        List<Country> countries = countryService.getAll();
         log.info("Countries are received. It took {} ms", System.currentTimeMillis() - startTime);
         return countries;
     }

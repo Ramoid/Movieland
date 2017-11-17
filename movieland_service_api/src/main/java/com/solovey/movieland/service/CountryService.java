@@ -7,7 +7,7 @@ import com.solovey.movieland.entity.Movie;
 import java.util.List;
 
 public interface CountryService {
-    List<Country> getAllGCountries();
+    List<Country> getAll();
 
     void enrichMoviesWithCountries(List<Movie> movies);
 

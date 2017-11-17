@@ -2,9 +2,7 @@ package com.solovey.movieland.web.controller;
 
 
 import com.solovey.movieland.entity.Country;
-import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.service.CountryService;
-import com.solovey.movieland.service.GenreService;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -32,7 +30,7 @@ public class CountryControllerTest {
         String expectedJson = "[{\"id\":1,\"name\":\"Ukraine\"}]";
 
         CountryService mockService = mock(CountryService.class);
-        when(mockService.getAllGCountries()).thenReturn(actualCountries);
+        when(mockService.getAll()).thenReturn(actualCountries);
 
         CountryController controller = new CountryController(mockService);
         MockMvc mockMvc = standaloneSetup(controller).build();

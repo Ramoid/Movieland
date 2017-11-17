@@ -27,7 +27,7 @@ public class JdbcGenreDao implements GenreDao {
 
 
     @Override
-    public List<Genre> getAllGenres() {
+    public List<Genre> getAll() {
         log.info("Start query to get all genres  from DB");
         long startTime = System.currentTimeMillis();
         List<Genre> genres = jdbcTemplate.query(getAllGenresSql, GENRE_ROW_MAPPER);

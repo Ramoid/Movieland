@@ -5,5 +5,5 @@ import com.solovey.movieland.entity.Country;
 import java.util.List;
 
 public interface CountryDao {
-   List<Country> getAllCountries();
+   List<Country> getAll();
 }

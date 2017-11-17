@@ -2,7 +2,6 @@ package com.solovey.movieland.web.controller;
 
 import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.service.GenreService;
-import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +30,7 @@ public class GenreController {
     public List<Genre> getAllGenres() {
         log.info("Sending request to get all genres");
         long startTime = System.currentTimeMillis();
-        List<Genre> genres = genreService.getAllGenres();
+        List<Genre> genres = genreService.getAll();
         log.info("Genres are received. It took {} ms", System.currentTimeMillis() - startTime);
         return genres;
     }
