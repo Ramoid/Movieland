@@ -19,7 +19,7 @@ import java.util.Map;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 @Controller
-@RequestMapping(value = "/v1/movie", method = GET, produces = "application/json;charset=UTF-8")
+@RequestMapping(value = "/movie", method = GET, produces = "application/json;charset=UTF-8")
 public class MovieController {
     private final Logger log = LoggerFactory.getLogger(getClass());
     private final MovieService movieService;

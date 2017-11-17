@@ -88,15 +88,15 @@ public class JsonJacksonConverter {
                 "genres", "countries", "reviews", "id", "nickname");
     }
 
-    public String convertGenresListToJson(List<Genre> genres) {
-        log.info("Start parsing movies to json ");
+    public String convertObjectToJson(Object objectToJson) {
+        log.info("Start parsing object to json ");
         long startTime = System.currentTimeMillis();
         String json;
         try {
-            json = objectMapper.writer().writeValueAsString(genres);
-            log.info("Jenres json is received. It took {} ms", System.currentTimeMillis() - startTime);
+            json = objectMapper.writer().writeValueAsString(objectToJson);
+            log.info("Object json is received. It took {} ms", System.currentTimeMillis() - startTime);
         } catch (JsonProcessingException e) {
-            log.error("Error parsing genres list with error {}", e);
+            log.error("Error parsing object with error {}", e);
             throw new RuntimeException(e);
         }
         return json;

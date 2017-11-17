@@ -7,8 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -36,12 +40,25 @@ public class JdbcReviewDao implements ReviewDao {
     }
 
     @Override
-    public void saveReviewToDb(Review review) {
+    public Review saveReviewToDb(Review review) {
         log.info("Start inserting review {} into DB", review.toString());
         long startTime = System.currentTimeMillis();
-        jdbcTemplate.update(insertReviewSql, review.getMovieId(),
-                review.getUser().getId(),review.getText());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+
+        jdbcTemplate.update((connection)->{
+            final PreparedStatement preparedStatement = connection.prepareStatement(insertReviewSql,
+                    Statement.RETURN_GENERATED_KEYS);
+            preparedStatement.setInt(1, review.getMovieId());
+            preparedStatement.setInt(2,review.getUser().getId());
+            preparedStatement.setString(3,review.getText());
+            return preparedStatement;
+        },keyHolder);
+
+        review.setId(keyHolder.getKey().intValue());
         log.info("Finish inserting review into DB. It took {} ms", System.currentTimeMillis() - startTime);
+
+        return review;
 
     }
 

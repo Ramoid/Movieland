@@ -43,18 +43,13 @@ public class ReviewControllerTest {
 
         ReviewService mockReviewService = mock(ReviewService.class);
 
-        List<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(UserRole.USER);
-
-        UserService mockUserService = mock(UserService.class);
-        when(mockUserService.getUserRoles(userId)).thenReturn(userRoles);
 
         PrincipalUser principal = new PrincipalUser("test user", 1);
 
-        ReviewController controller = new ReviewController(mockReviewService, mockJsonJacksonConverter, mockUserService);
+        ReviewController controller = new ReviewController(mockReviewService, mockJsonJacksonConverter);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(post("/v1/review").
+        mockMvc.perform(post("/review").
                 principal(principal).
                 contentType("application/json;charset=UTF-8").
                 content(inputJson))

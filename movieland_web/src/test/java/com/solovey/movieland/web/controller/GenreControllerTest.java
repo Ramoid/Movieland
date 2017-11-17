@@ -1,4 +1,4 @@
-package com.solovey.movieland.web;
+package com.solovey.movieland.web.controller;
 
 
 import com.solovey.movieland.entity.Genre;
@@ -34,13 +34,10 @@ public class GenreControllerTest {
         GenreService mockService = mock(GenreService.class);
         when(mockService.getAllGenres()).thenReturn(actualGenres);
 
-        JsonJacksonConverter mockConverter = mock(JsonJacksonConverter.class);
-        when(mockConverter.convertGenresListToJson(actualGenres)).thenReturn(expectedJson);
-
-        GenreController controller = new GenreController(mockService, mockConverter);
+        GenreController controller = new GenreController(mockService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(get("/v1/genre"))
+        mockMvc.perform(get("/genre"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$", hasSize(1)))

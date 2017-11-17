@@ -10,21 +10,22 @@ import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebFilter("/v1/review")
+@WebFilter("/v1/*")
 public class SecurityFilter implements Filter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) {
+
         HttpServletRequestWrapper requestWrapper = new SecurityHttpRequestWrapper((HttpServletRequest) request);
-        final HttpServletResponse outResponse = ((HttpServletResponse) response);
 
         try {
-            chain.doFilter(requestWrapper, outResponse);
+            chain.doFilter((requestWrapper.getHeader("uuid") != null) ? requestWrapper : request, response);
         } catch (ServletException | IOException e) {
-            log.error("Error processing Filter {}",  e);
+            log.error("Error processing Filter {}", e);
             throw new RuntimeException();
         }
+
     }
 
     @Override

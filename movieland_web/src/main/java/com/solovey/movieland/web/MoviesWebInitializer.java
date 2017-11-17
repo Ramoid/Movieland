@@ -17,7 +17,7 @@ public class MoviesWebInitializer extends AbstractAnnotationConfigDispatcherServ
 
   @Override
   protected String[] getServletMappings() {
-    return new String[] { "/" };
+    return new String[] { "/v1/*" };
   }
 
 }

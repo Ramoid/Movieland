@@ -1,4 +1,4 @@
-package com.solovey.movieland.web;
+package com.solovey.movieland.web.controller;
 
 
 import com.solovey.movieland.entity.Genre;
@@ -60,7 +60,7 @@ public class MovieControllerTest {
         MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        MvcResult result = mockMvc.perform(get("/v1/movie?rating=asc"))
+        MvcResult result = mockMvc.perform(get("/movie?rating=asc"))
                 .andReturn();
         String actualResult = result.getResponse().getContentAsString();
         //System.out.println(actualResult);
@@ -89,7 +89,7 @@ public class MovieControllerTest {
         MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(get("/v1/movie/random"))
+        mockMvc.perform(get("/movie/random"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -131,7 +131,7 @@ public class MovieControllerTest {
         MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(get("/v1/movie/genre/" + ID + "?rating=asc"))
+        mockMvc.perform(get("/movie/genre/" + ID + "?rating=asc"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -169,7 +169,7 @@ public class MovieControllerTest {
         MovieController controller = new MovieController(mockService, mockConverter, mockToDtoConverter, mockCurrencyService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(get("/v1/movie/1?currency=USD"))
+        mockMvc.perform(get("/movie/1?currency=USD"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 //.andExpect(jsonPath("$", hasSize(1)))
