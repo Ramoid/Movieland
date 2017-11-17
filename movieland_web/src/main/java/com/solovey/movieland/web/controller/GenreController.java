@@ -27,7 +27,7 @@ public class GenreController {
 
     @RequestMapping(method = GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public List<Genre> getAllGenres() {
+    public List<Genre> getAll() {
         log.info("Sending request to get all genres");
         long startTime = System.currentTimeMillis();
         List<Genre> genres = genreService.getAll();

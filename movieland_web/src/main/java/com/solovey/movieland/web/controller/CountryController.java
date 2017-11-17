@@ -27,7 +27,7 @@ public class CountryController {
 
     @RequestMapping(method = GET, produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public List<Country> getAllCountries() {
+    public List<Country> getAll() {
         log.info("Sending request to get all countries");
         long startTime = System.currentTimeMillis();
         List<Country> countries = countryService.getAll();
