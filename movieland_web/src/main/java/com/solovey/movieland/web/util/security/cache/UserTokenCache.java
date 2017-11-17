@@ -1,10 +1,10 @@
-package com.solovey.movieland.web.util.auth.cache;
+package com.solovey.movieland.web.util.security.cache;
 
 
 import com.solovey.movieland.entity.User;
-import com.solovey.movieland.web.util.auth.entity.TokenCacheUser;
-import com.solovey.movieland.web.util.auth.exceptions.UserNotFoundException;
-import com.solovey.movieland.web.util.auth.exceptions.UserTokenExpiredException;
+import com.solovey.movieland.web.util.security.entity.TokenCacheUser;
+import com.solovey.movieland.web.util.security.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.util.security.exceptions.UserTokenExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -81,7 +81,7 @@ public class UserTokenCache {
             throw new UserTokenExpiredException();
         }
 
-        log.info("User {} has been  found for token {}. It took {} ms", tokenCacheUser.getUser(), tokenToSearch, System.currentTimeMillis() - startTime);
+        log.info("User has been  found for token {}. It took {} ms",  tokenToSearch, System.currentTimeMillis() - startTime);
 
 
         return tokenCacheUser.getUser();

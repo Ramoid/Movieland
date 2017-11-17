@@ -1,6 +1,6 @@
 package com.solovey.movieland.service;
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.entity.enums.SortDirection;
+import com.solovey.movieland.dao.enums.SortDirection;
 
 import java.util.List;
 import java.util.Map;

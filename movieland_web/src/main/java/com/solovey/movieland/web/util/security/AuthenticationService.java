@@ -1,13 +1,13 @@
-package com.solovey.movieland.web.util.auth;
+package com.solovey.movieland.web.util.security;
 
 
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.service.UserService;
-import com.solovey.movieland.web.util.auth.cache.UserTokenCache;
-import com.solovey.movieland.web.util.auth.entity.LoginRequest;
-import com.solovey.movieland.web.util.auth.entity.UserToken;
-import com.solovey.movieland.web.util.auth.exceptions.InvalidLoginPasswordException;
-import com.solovey.movieland.web.util.auth.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.util.security.cache.UserTokenCache;
+import com.solovey.movieland.web.util.security.entity.LoginRequest;
+import com.solovey.movieland.web.util.security.entity.UserToken;
+import com.solovey.movieland.web.util.security.exceptions.InvalidLoginPasswordException;
+import com.solovey.movieland.web.util.security.exceptions.UserNotFoundException;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import org.mindrot.jbcrypt.BCrypt;
 import org.slf4j.Logger;

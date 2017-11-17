@@ -2,7 +2,7 @@ package com.solovey.movieland.service.impl;
 
 import com.solovey.movieland.dao.MovieDao;
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.entity.enums.SortDirection;
+import com.solovey.movieland.dao.enums.SortDirection;
 import com.solovey.movieland.service.CountryService;
 import com.solovey.movieland.service.GenreService;
 import com.solovey.movieland.service.MovieService;

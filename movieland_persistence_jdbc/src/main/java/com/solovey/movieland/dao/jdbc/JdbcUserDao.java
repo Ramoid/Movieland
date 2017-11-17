@@ -2,6 +2,7 @@ package com.solovey.movieland.dao.jdbc;
 
 
 import com.solovey.movieland.dao.UserDao;
+import com.solovey.movieland.dao.enums.UserRole;
 import com.solovey.movieland.dao.jdbc.mapper.UserRowMapper;
 import com.solovey.movieland.entity.User;
 import org.slf4j.Logger;
@@ -12,6 +13,8 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,7 +26,10 @@ public class JdbcUserDao implements UserDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
-    private String getuserByEmail;
+    private String getUserByEmail;
+
+    @Autowired
+    private String gerUserRolesSql;
 
     @Override
     public Optional<User> extractUser(String email) {
@@ -31,7 +37,7 @@ public class JdbcUserDao implements UserDao {
         long startTime = System.currentTimeMillis();
 
         try {
-            User user = jdbcTemplate.queryForObject(getuserByEmail, USER_ROW_MAPPER, email);
+            User user = jdbcTemplate.queryForObject(getUserByEmail, USER_ROW_MAPPER, email);
             log.info("Finish query extract user {} by passoword and email. It took {} ms", user, System.currentTimeMillis() - startTime);
             return Optional.of(user);
         } catch (EmptyResultDataAccessException e) {
@@ -40,8 +46,22 @@ public class JdbcUserDao implements UserDao {
 
         }
 
+    }
 
+    @Override
+    public List<UserRole> getUserRoles(int userId) {
+        log.info("Start extracting roles by user {} from DB", userId);
+        long startTime = System.currentTimeMillis();
 
+        SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(gerUserRolesSql, userId);
+        ArrayList<UserRole> userRoles = new ArrayList<>();
+        while (sqlRowSet.next()) {
+            userRoles.add(UserRole.getRole(sqlRowSet.getString("role_name")));
+        }
+
+        log.info("Finish extracting roles by user {} from DB. It took {} ms", userId, System.currentTimeMillis() - startTime);
+
+        return userRoles;
     }
 }
 

@@ -4,7 +4,7 @@ import com.solovey.movieland.dao.jdbc.mapper.MovieRowMapper;
 import com.solovey.movieland.dao.jdbc.mapper.RandomMovieRowMapper;
 import com.solovey.movieland.dao.MovieDao;
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.entity.enums.SortDirection;
+import com.solovey.movieland.dao.enums.SortDirection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -27,6 +27,7 @@
             <onMismatch>ACCEPT</onMismatch>
         </filter>-->
         <encoder>
+            <charset>UTF-8</charset>
             <pattern>%d{HH:mm:ss.SSS} [%thread] %X{requestId} %X{nickname} %-5level %logger{36} - %msg%n</pattern>
         </encoder>
     </appender>

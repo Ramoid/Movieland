@@ -1,8 +1,8 @@
 package com.solovey.movieland.web.controller;
 
 
-import com.solovey.movieland.web.util.auth.AuthenticationService;
-import com.solovey.movieland.web.util.auth.entity.UserToken;
+import com.solovey.movieland.web.util.security.AuthenticationService;
+import com.solovey.movieland.web.util.security.entity.UserToken;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 

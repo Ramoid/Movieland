@@ -1,6 +1,7 @@
 package com.solovey.movieland.web;
 
-import com.solovey.movieland.web.util.auth.cache.TokenCacheConfig;
+import com.solovey.movieland.web.util.RequestInterceptor;
+import com.solovey.movieland.web.util.security.cache.TokenCacheConfig;
 import com.solovey.movieland.web.util.currency.cache.CurrencyCacheConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -17,13 +18,13 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 @ComponentScan("com.solovey.movieland.web")
 public class WebConfig extends WebMvcConfigurerAdapter {
     @Bean
-    public LoggerInterceptor loggerInterceptor() {
-        return new LoggerInterceptor();
+    public RequestInterceptor requestInterceptor() {
+        return new RequestInterceptor();
     }
-    
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(loggerInterceptor());
+        registry.addInterceptor(requestInterceptor());
     }
 
 }

@@ -1,6 +1,6 @@
 package com.solovey.movieland.dao.jdbc;
 
-import com.solovey.movieland.entity.enums.SortDirection;
+import com.solovey.movieland.dao.enums.SortDirection;
 import org.junit.Test;
 
 import java.sql.SQLException;

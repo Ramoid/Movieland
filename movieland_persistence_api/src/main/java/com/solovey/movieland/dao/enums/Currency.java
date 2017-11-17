@@ -1,4 +1,4 @@
-package com.solovey.movieland.entity.enums;
+package com.solovey.movieland.dao.enums;
 
 
 public enum Currency {
