@@ -46,12 +46,11 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
 
         String uuid = request.getHeader("uuid");
         String username = null;
+        Optional<List<UserRole>> rolesOprional = getRequiredRoles(handler);
         if (uuid != null) {
             try {
                 User user = authenticationService.recognizeUser(uuid);
                 username = user.getEmail();
-
-                Optional<List<UserRole>> rolesOprional = getRequiredRoles(handler);
 
                 if (rolesOprional.isPresent() && Collections.disjoint(userService.getUserRoles(user.getId()), rolesOprional.get())) {
                     log.warn("User {} does not have required role ", user.getEmail());
@@ -71,8 +70,10 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
 
                 return false;
             }
-        } else {
-            log.info("Request with empty uuid");
+        } else if(rolesOprional.isPresent()){
+            log.info("Request with empty uuid and role needed");
+            writeResponseOnFail(response, HttpServletResponse.SC_FORBIDDEN, "Guest do not have access to this function");
+            return false;
         }
 
         MDC.put("requestId", UUID.randomUUID().toString());
