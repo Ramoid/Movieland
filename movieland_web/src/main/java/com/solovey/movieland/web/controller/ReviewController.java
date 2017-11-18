@@ -3,22 +3,14 @@ package com.solovey.movieland.web.controller;
 import com.solovey.movieland.dao.enums.UserRole;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.service.ReviewService;
-import com.solovey.movieland.service.UserService;
-import com.solovey.movieland.web.util.dto.ExceptionDto;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import com.solovey.movieland.web.util.security.Protected;
 import com.solovey.movieland.web.util.security.entity.PrincipalUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpServletRequest;
-import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -44,7 +36,7 @@ public class ReviewController {
         log.info("Start save review {}", reviewJson);
         long startTime = System.currentTimeMillis();
 
-        Review review = reviewService.saveReviewToDb(jsonJacksonConverter.parseJsonToReview(reviewJson, principal.getUserId()));
+        Review review = reviewService.addReview(jsonJacksonConverter.parseJsonToReview(reviewJson, principal.getUserId()));
         log.info("Review has been saved to DB. It took {} ms", System.currentTimeMillis() - startTime);
         return review;
 

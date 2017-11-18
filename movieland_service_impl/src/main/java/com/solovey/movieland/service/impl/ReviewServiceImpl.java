@@ -21,7 +21,7 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public Review saveReviewToDb(Review review) {
-        return reviewDao.saveReviewToDb(review);
+    public Review addReview(Review review) {
+        return reviewDao.addReview(review);
     }
 }

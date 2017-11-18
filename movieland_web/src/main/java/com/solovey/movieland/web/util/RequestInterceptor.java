@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -56,7 +55,7 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
 
                 if (rolesOprional.isPresent() && Collections.disjoint(userService.getUserRoles(user.getId()), rolesOprional.get())) {
                     log.warn("User {} does not have required role ", user.getEmail());
-                    writeResponceOnFail(response, HttpServletResponse.SC_FORBIDDEN, "User does not have required role");
+                    writeResponseOnFail(response, HttpServletResponse.SC_FORBIDDEN, "User does not have required role");
                     return false;
                 } else {
                     ((SecurityHttpRequestWrapper) request).setUserPrincipal(new PrincipalUser(user.getEmail(), user.getId()));
@@ -64,11 +63,11 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
 
             } catch (UserNotFoundException e) {
                 log.warn("Cannot find user with uuid {}", uuid);
-                writeResponceOnFail(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                writeResponseOnFail(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
                 return false;
             } catch (UserTokenExpiredException e) {
                 log.warn("Expired uuid {}", uuid);
-                writeResponceOnFail(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
+                writeResponseOnFail(response, HttpServletResponse.SC_UNAUTHORIZED, e.getMessage());
 
                 return false;
             }
@@ -99,11 +98,10 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
         return Optional.empty();
     }
 
-    private void writeResponceOnFail(HttpServletResponse response, int responceStatus, String message) {
+    private void writeResponseOnFail(HttpServletResponse response, int responceStatus, String message) {
         response.setStatus(responceStatus);
         try (Writer responceWriter = response.getWriter()) {
             responceWriter.write(jsonJacksonConverter.convertObjectToJson(new ExceptionDto(message)));
-            responceWriter.flush();
         } catch (IOException e) {
             log.error("Error write reponce {}", e);
             throw new RuntimeException(e);
