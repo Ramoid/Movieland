@@ -87,7 +87,7 @@ class QueryConfig {
     @Bean
     public String insertReviewSql(){
         return "insert into movies.review(movie_id,user_id,rtext) " +
-                "values(?,?,?)";
+                "values(:movieId,:userId,:text)";
     }
 
     @Bean
