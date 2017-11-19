@@ -11,4 +11,8 @@ public interface GenreService {
     void enrichMoviesWithGenres(List<Movie> movies);
 
     void enrichMovieWithGenres(Movie movie);
+
+    void addGenreMapping(List<Genre> genres,int movieId);
+
+    void removeGenreMappingsByIds(List<Genre> genres, int movieId);
 }

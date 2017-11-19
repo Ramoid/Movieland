@@ -48,4 +48,14 @@ public class GenreServiceImpl implements GenreService {
 
     }
 
+    @Override
+    public void addGenreMapping(List<Genre> genres, int movieId) {
+        genreDao.addGenreMapping(genres, movieId);
+    }
+
+    @Override
+    public void removeGenreMappingsByIds(List<Genre> genres, int movieId) {
+        genreDao.removeGenreMappingsByIds(genres,movieId);
+    }
+
 }

@@ -30,14 +30,24 @@ public class GenreCache implements GenreDao {
     @Override
     public List<Genre> getAll() {
         List<Genre> genresCacheCopy = genresCache;
-        List<Genre> genresCacheToReturn= new ArrayList<>();
-        for (Genre genre : genresCacheCopy){
-            Genre copyGenre= new Genre();
+        List<Genre> genresCacheToReturn = new ArrayList<>();
+        for (Genre genre : genresCacheCopy) {
+            Genre copyGenre = new Genre();
             copyGenre.setId(genre.getId());
             copyGenre.setName(genre.getName());
             genresCacheToReturn.add(copyGenre);
         }
         return genresCacheToReturn;
+    }
+
+    @Override
+    public void addGenreMapping(List<Genre> genres, int movieId) {
+        genreDao.addGenreMapping(genres, movieId);
+    }
+
+    @Override
+    public void removeGenreMappingsByIds(List<Genre> genres, int movieId) {
+        genreDao.removeGenreMappingsByIds(genres, movieId);
     }
 
     @PostConstruct

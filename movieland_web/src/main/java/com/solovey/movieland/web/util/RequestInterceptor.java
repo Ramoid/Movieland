@@ -72,7 +72,7 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
             }
         } else if(rolesOprional.isPresent()){
             log.info("Request with empty uuid and role needed");
-            writeResponseOnFail(response, HttpServletResponse.SC_FORBIDDEN, "Guest do not have access to this function");
+            writeResponseOnFail(response, HttpServletResponse.SC_FORBIDDEN, "Guest does not have permission to do this action");
             return false;
         }
 

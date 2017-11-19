@@ -29,7 +29,7 @@ public class ReviewController {
         this.jsonJacksonConverter = jsonJacksonConverter;
     }
 
-    @RequestMapping(value = "/review", method = POST, consumes = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/review", method = POST,produces = "application/json;charset=UTF-8", consumes = "application/json;charset=UTF-8")
     @ResponseBody
     @Protected(roles = {UserRole.USER})
     public Object saveReview(@RequestBody String reviewJson, PrincipalUser principal) {
