@@ -7,9 +7,9 @@ import com.solovey.movieland.entity.User;
 import com.solovey.movieland.service.ReviewService;
 import com.solovey.movieland.service.UserService;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
-import com.solovey.movieland.web.util.security.AuthenticationService;
-import com.solovey.movieland.web.util.security.entity.PrincipalUser;
-import com.solovey.movieland.web.util.security.entity.UserToken;
+import com.solovey.movieland.web.security.AuthenticationService;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
+import com.solovey.movieland.web.security.entity.UserToken;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,18 +43,13 @@ public class ReviewControllerTest {
 
         ReviewService mockReviewService = mock(ReviewService.class);
 
-        List<UserRole> userRoles = new ArrayList<>();
-        userRoles.add(UserRole.USER);
-
-        UserService mockUserService = mock(UserService.class);
-        when(mockUserService.getUserRoles(userId)).thenReturn(userRoles);
 
         PrincipalUser principal = new PrincipalUser("test user", 1);
 
-        ReviewController controller = new ReviewController(mockReviewService, mockJsonJacksonConverter, mockUserService);
+        ReviewController controller = new ReviewController(mockReviewService, mockJsonJacksonConverter);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(post("/v1/review").
+        mockMvc.perform(post("/review").
                 principal(principal).
                 contentType("application/json;charset=UTF-8").
                 content(inputJson))

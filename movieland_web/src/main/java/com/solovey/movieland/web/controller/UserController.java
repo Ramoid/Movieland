@@ -2,10 +2,8 @@ package com.solovey.movieland.web.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-import com.solovey.movieland.web.util.security.entity.ExceptionDto;
 import com.solovey.movieland.web.util.security.entity.UserToken;
 import com.solovey.movieland.web.util.security.AuthenticationService;
-import com.solovey.movieland.web.util.security.exceptions.BadLoginRequestException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,30 +29,19 @@ public class UserController {
         this.authenticationService = authenticationService;
     }
 
-    @RequestMapping(value = "/v1/login", method = POST, consumes = "application/json;", produces = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/login", method = POST, consumes = "application/json;", produces = "application/json;charset=UTF-8")
     @ResponseBody
-    public Object processLogin(@RequestBody String loginJson, HttpServletResponse response) {
+    public UserToken processLogin(@RequestBody String loginJson, HttpServletResponse response) {
         log.info("Start login user ");
         long startTime = System.currentTimeMillis();
-        try {
-            UserToken userToken = authenticationService.performLogin(loginJson);
-            response.setStatus(200);
-            log.info("User logged in. It took {} ms", System.currentTimeMillis() - startTime);
-            return userToken;
-        }
-        catch (BadLoginRequestException e){
-            response.setStatus(400);
-            return new ExceptionDto(e.getMessage());
-        }
-        catch (RuntimeException e){
-            response.setStatus(401);
-            return new ExceptionDto(e.getMessage());
-        }
-
+        UserToken userToken = authenticationService.performLogin(loginJson);
+        response.setStatus(200);
+        log.info("User logged in. It took {} ms", System.currentTimeMillis() - startTime);
+        return userToken;
 
     }
 
-    @RequestMapping(value = "/v1/logout", method = DELETE)
+    @RequestMapping(value = "/logout", method = DELETE)
     public ResponseEntity processLogout(@RequestHeader(value = "uuid") String uuid) {
         log.info("Start logout token {}", uuid);
         authenticationService.performLogout(uuid);

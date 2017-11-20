@@ -1,8 +1,8 @@
 package com.solovey.movieland.web.controller;
 
 
-import com.solovey.movieland.entity.Genre;
-import com.solovey.movieland.service.GenreService;
+import com.solovey.movieland.entity.Country;
+import com.solovey.movieland.service.CountryService;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -20,36 +20,36 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.standal
 //import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 //import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 
-public class GenreControllerTest {
+public class CountryControllerTest {
 
 
     @Test
-    public void shouldReturnAllGenresList() throws Exception {
-        List<Genre> actualGenres = createGenreList();
+    public void shouldReturnAllCountriesList() throws Exception {
+        List<Country> actualCountries = createCountryList();
 
-        String expectedJson = "[{\"id\":1,\"name\":\"Ужосы\"}]";
+        String expectedJson = "[{\"id\":1,\"name\":\"Ukraine\"}]";
 
-        GenreService mockService = mock(GenreService.class);
-        when(mockService.getAll()).thenReturn(actualGenres);
+        CountryService mockService = mock(CountryService.class);
+        when(mockService.getAll()).thenReturn(actualCountries);
 
-        GenreController controller = new GenreController(mockService);
+        CountryController controller = new CountryController(mockService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(get("/genre"))
+        mockMvc.perform(get("/country"))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/json;charset=UTF-8"))
                 .andExpect(jsonPath("$", hasSize(1)))
                 .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("Ужосы")));
+                .andExpect(jsonPath("$[0].name", is("Ukraine")));
     }
 
-    private List<Genre> createGenreList() {
-        List<Genre> genres = new ArrayList<>();
-        Genre genre = new Genre();
-        genre.setId(1);
-        genre.setName("Ужосы");
-        genres.add(genre);
-        return genres;
+    private List<Country> createCountryList() {
+        List<Country> countries = new ArrayList<>();
+        Country country = new Country();
+        country.setId(1);
+        country.setName("Ukraine");
+        countries.add(country);
+        return countries;
     }
 
 

@@ -23,13 +23,13 @@ public class CountryServiceImpl implements CountryService {
     }
 
     @Override
-    public List<Country> getAllGCountries() {
-        return countryDao.getAllCountries();
+    public List<Country> getAll() {
+        return countryDao.getAll();
     }
 
     @Override
     public void enrichMoviesWithCountries(List<Movie> movies) {
-        Map<Integer, String> countriesMap = countryDao.getAllCountries().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
+        Map<Integer, String> countriesMap = countryDao.getAll().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 
         for (Movie movie : movies) {
             for (Country movieCountry : movie.getCountries()) {
@@ -40,11 +40,21 @@ public class CountryServiceImpl implements CountryService {
 
     @Override
     public void enrichMovieWithCountries(Movie movie) {
-        Map<Integer, String> countriesMap = countryDao.getAllCountries().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
+        Map<Integer, String> countriesMap = countryDao.getAll().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 
         for (Country movieCountry : movie.getCountries()) {
             movieCountry.setName(countriesMap.get(movieCountry.getId()));
         }
+    }
+
+    @Override
+    public void addCountryMapping(List<Country> countries, int movieId) {
+        countryDao.addCountryMapping(countries,movieId);
+    }
+
+    @Override
+    public void removeCountryMappingsByIds(List<Country> countries, int movieId) {
+        countryDao.removeCountryMappingsByIds(countries,movieId);
     }
 
 }

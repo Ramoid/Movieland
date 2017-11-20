@@ -28,11 +28,11 @@ public class GenreCache implements GenreDao {
     }
 
     @Override
-    public List<Genre> getAllGenres() {
+    public List<Genre> getAll() {
         List<Genre> genresCacheCopy = genresCache;
-        List<Genre> genresCacheToReturn= new ArrayList<>();
-        for (Genre genre : genresCacheCopy){
-            Genre copyGenre= new Genre();
+        List<Genre> genresCacheToReturn = new ArrayList<>();
+        for (Genre genre : genresCacheCopy) {
+            Genre copyGenre = new Genre();
             copyGenre.setId(genre.getId());
             copyGenre.setName(genre.getName());
             genresCacheToReturn.add(copyGenre);
@@ -40,12 +40,22 @@ public class GenreCache implements GenreDao {
         return genresCacheToReturn;
     }
 
+    @Override
+    public void addGenreMapping(List<Genre> genres, int movieId) {
+        genreDao.addGenreMapping(genres, movieId);
+    }
+
+    @Override
+    public void removeGenreMappingsByIds(List<Genre> genres, int movieId) {
+        genreDao.removeGenreMappingsByIds(genres, movieId);
+    }
+
     @PostConstruct
     @Scheduled(fixedDelayString = "${genre_cache_refresh_interval}", initialDelayString = "${genre_cache_refresh_interval}")
     private void invalidate() {
         log.info("Start genre cache refresh");
         long startTime = System.currentTimeMillis();
-        genresCache = genreDao.getAllGenres();
+        genresCache = genreDao.getAll();
         log.info("Genre chache has been reloaded. It took {} ms", System.currentTimeMillis() - startTime);
     }
 

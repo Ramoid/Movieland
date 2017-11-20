@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util.security.cache;
+package com.solovey.movieland.web.security.cache;
 
 
 import org.springframework.context.annotation.Configuration;

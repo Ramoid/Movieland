@@ -7,8 +7,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
+import java.sql.PreparedStatement;
+import java.sql.Statement;
 import java.util.List;
 
 @Repository
@@ -19,6 +25,9 @@ public class JdbcReviewDao implements ReviewDao {
 
     @Autowired
     private JdbcTemplate jdbcTemplate;
+
+    @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
 
     @Autowired
     private String getReviewsByMovieIdSql;
@@ -36,12 +45,23 @@ public class JdbcReviewDao implements ReviewDao {
     }
 
     @Override
-    public void saveReviewToDb(Review review) {
-        log.info("Start inserting review {} into DB", review.toString());
+    public Review addReview(Review review) {
+        log.info("Start inserting review {} into DB", review);
         long startTime = System.currentTimeMillis();
-        jdbcTemplate.update(insertReviewSql, review.getMovieId(),
-                review.getUser().getId(),review.getText());
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("movieId", review.getMovieId())
+                .addValue("userId", review.getUser().getId())
+                .addValue("text", review.getText());
+
+
+        namedParameterJdbcTemplate.update(insertReviewSql, parameters, keyHolder);
+        
+        review.setId(keyHolder.getKey().intValue());
         log.info("Finish inserting review into DB. It took {} ms", System.currentTimeMillis() - startTime);
+
+        return review;
 
     }
 

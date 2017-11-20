@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util.security.entity;
+package com.solovey.movieland.web.util.dto;
 
 public class ExceptionDto {
     private String exceptionText;

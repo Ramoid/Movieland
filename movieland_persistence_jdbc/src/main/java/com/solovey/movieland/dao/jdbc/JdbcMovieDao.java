@@ -9,6 +9,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.support.GeneratedKeyHolder;
+import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -25,6 +29,9 @@ public class JdbcMovieDao implements MovieDao {
     private JdbcTemplate jdbcTemplate;
 
     @Autowired
+    private NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+
+    @Autowired
     private String getMoviesByGenreIdSql;
 
     @Autowired
@@ -37,7 +44,10 @@ public class JdbcMovieDao implements MovieDao {
     private String getRandomMoviesSql;
 
     @Autowired
-    private JdbcReviewDao jdbcReviewDao;
+    private String insertMovieSql;
+
+    @Autowired
+    private String updateMovieSql;
 
     @Autowired
     private QueryGenerator queryGenerator;
@@ -85,6 +95,51 @@ public class JdbcMovieDao implements MovieDao {
 
     }
 
+    @Override
+    public Movie addMovie(Movie movie) {
+        log.info("Start inserting movie {} into DB", movie);
+        long startTime = System.currentTimeMillis();
+        KeyHolder keyHolder = new GeneratedKeyHolder();
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("nameRussian", movie.getNameRussian())
+                .addValue("nameNative", movie.getNameNative())
+                .addValue("movieYear", movie.getYearOfRelease())
+                .addValue("descriprion", movie.getDescription())
+                .addValue("rating", movie.getRating())
+                .addValue("price", movie.getPrice())
+                .addValue("picturePath", movie.getPicturePath());
+
+
+        namedParameterJdbcTemplate.update(insertMovieSql, parameters, keyHolder);
+
+        movie.setMovieId(keyHolder.getKey().intValue());
+        log.info("Finish inserting movie into DB. It took {} ms", System.currentTimeMillis() - startTime);
+
+        return movie;
+    }
+
+    @Override
+    public void editMovie(Movie movie) {
+        log.info("Start updating movie {} in DB", movie);
+        long startTime = System.currentTimeMillis();
+
+        MapSqlParameterSource parameters = new MapSqlParameterSource()
+                .addValue("nameRussian", movie.getNameRussian())
+                .addValue("nameNative", movie.getNameNative())
+                .addValue("yearOfRelease", movie.getYearOfRelease())
+                .addValue("description", movie.getDescription())
+                .addValue("rating", movie.getRating())
+                .addValue("price", movie.getPrice())
+                .addValue("picturePath", movie.getPicturePath())
+                .addValue("movieId", movie.getMovieId());
+
+
+        namedParameterJdbcTemplate.update(updateMovieSql, parameters);
+
+        log.info("Finish updating movie in DB. It took {} ms", System.currentTimeMillis() - startTime);
+
+    }
 
 }
 

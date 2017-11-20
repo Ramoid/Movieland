@@ -27,7 +27,7 @@ public class UserControllerTest {
         UserController controller = new UserController(mockAuthenticationService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
-        mockMvc.perform(post("/v1/login").
+        mockMvc.perform(post("/login").
                 contentType("application/json;charset=UTF-8").
                 content(inputJson))
                 .andExpect(status().isOk())

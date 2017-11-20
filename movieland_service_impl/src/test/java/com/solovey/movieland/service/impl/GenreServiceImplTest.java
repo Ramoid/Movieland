@@ -33,7 +33,7 @@ public class GenreServiceImplTest {
         Movie actualMovie = createMovieList().get(0);
 
         GenreDao mockGenreDao = mock(GenreDao.class);
-        when(mockGenreDao.getAllGenres()).thenReturn(actualGenres);
+        when(mockGenreDao.getAll()).thenReturn(actualGenres);
 
         GenreServiceImpl genreService = new GenreServiceImpl(mockGenreDao);
 
@@ -52,7 +52,7 @@ public class GenreServiceImplTest {
         List <Movie> actualMovies = createMovieList();
 
         GenreDao mockGenreDao = mock(GenreDao.class);
-        when(mockGenreDao.getAllGenres()).thenReturn(actualGenres);
+        when(mockGenreDao.getAll()).thenReturn(actualGenres);
 
         GenreServiceImpl genreService = new GenreServiceImpl(mockGenreDao);
 
