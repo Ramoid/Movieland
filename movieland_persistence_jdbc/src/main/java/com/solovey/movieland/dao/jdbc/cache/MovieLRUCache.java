@@ -1,33 +1,44 @@
 package com.solovey.movieland.dao.jdbc.cache;
 
 
+import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 import com.solovey.movieland.dao.MovieDao;
 import com.solovey.movieland.dao.enums.SortDirection;
 import com.solovey.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.lang.ref.Reference;
 import java.lang.ref.SoftReference;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 @Service
 @Primary
-public class MovieCache implements MovieDao {
+@Profile("LRUCache")
+public class MovieLRUCache implements MovieDao {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
-    private ConcurrentHashMap<Integer, Reference<Movie>> movieCache = new ConcurrentHashMap<>();
+    @Value("${lru_cache_capacity}")
+    private int cacheCapacity;
+
+
+    private ConcurrentMap<Integer, Movie> movieCache;
 
     private MovieDao movieDao;
 
+
     @Autowired
-    public MovieCache(MovieDao movieDao) {
+    public MovieLRUCache(MovieDao movieDao) {
         this.movieDao = movieDao;
     }
 
@@ -48,23 +59,22 @@ public class MovieCache implements MovieDao {
 
     @Override
     public Movie getMovieById(int movieId) {
-        log.info("Trying to retrive movie with id {} from cache ",movieId);
+        log.info("Trying to retrieve movie with id {} from the LRU cache ", movieId);
         long startTime = System.currentTimeMillis();
 
-        Reference<Movie> movieReference = movieCache.get(movieId);
         Movie movie;
+        System.out.println(cacheCapacity);
 
-        if (movieReference != null) {
-
-            movie = movieReference.get();
-            if (movie != null) {
-                log.info("Movie was retriewed from cache It took {} ms", System.currentTimeMillis() - startTime);
-                return movie;
-            }
+        movie = movieCache.get(movieId);
+        if (movie != null) {
+            log.info("Movie was retriewed from the LRU cache It took {} ms", System.currentTimeMillis() - startTime);
+            return movie;
         }
+
         log.info("Movie was not found in cache. Retriewing from db... ");
         movie = movieDao.getMovieById(movieId);
         addMovieToCache(movie);
+        System.out.println(movieCache.get(2));
         return movie;
 
     }
@@ -83,11 +93,17 @@ public class MovieCache implements MovieDao {
 
     }
 
+    @PostConstruct
+    private  void initCache(){
+        movieCache = new ConcurrentLinkedHashMap.Builder<Integer, Movie>()
+                .maximumWeightedCapacity(cacheCapacity)
+                .build();
+    }
+
     private void addMovieToCache(Movie movie) {
-        log.info("Add movie with id {} to cache ", movie.getMovieId());
+        log.info("Add movie with id {} to the LRU cache ", movie.getMovieId());
         long startTime = System.currentTimeMillis();
-        SoftReference<Movie> movieSoftReference = new SoftReference<Movie>(movie);
-        movieCache.put(movie.getMovieId(), movieSoftReference);
-        log.info("Movie has been added to cache. It took {} ms", System.currentTimeMillis() - startTime);
+        movieCache.put(movie.getMovieId(), movie);
+        log.info("Movie has been added to the LRU cache. It took {} ms", System.currentTimeMillis() - startTime);
     }
 }
