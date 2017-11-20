@@ -130,10 +130,20 @@ public class JsonJacksonConverter {
             return review;
         } catch (IOException e) {
             log.error("Error parsing incoming json{} exception {}", jsonReview, e);
-            throw new RuntimeException();
+            throw new RuntimeException(e);
         }
 
 
+    }
+
+    public <T> T jsonToObject(String json, Class<T> clazz) {
+
+        try {
+            return objectMapper.readValue(json, clazz);
+        } catch (IOException e) {
+            log.error("Error parsing incoming json{} exception {}", json, e);
+            throw new RuntimeException(e);
+        }
     }
 
 

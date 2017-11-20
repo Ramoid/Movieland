@@ -47,4 +47,14 @@ public class CountryServiceImpl implements CountryService {
         }
     }
 
+    @Override
+    public void addCountryMapping(List<Country> countries, int movieId) {
+        countryDao.addCountryMapping(countries,movieId);
+    }
+
+    @Override
+    public void removeCountryMappingsByIds(List<Country> countries, int movieId) {
+        countryDao.removeCountryMappingsByIds(countries,movieId);
+    }
+
 }

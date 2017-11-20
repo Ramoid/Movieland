@@ -4,8 +4,8 @@ import com.solovey.movieland.dao.enums.UserRole;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.service.ReviewService;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
-import com.solovey.movieland.web.util.security.Protected;
-import com.solovey.movieland.web.util.security.entity.PrincipalUser;
+import com.solovey.movieland.web.security.Protected;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class ReviewController {
         this.jsonJacksonConverter = jsonJacksonConverter;
     }
 
-    @RequestMapping(value = "/review", method = POST, consumes = "application/json;charset=UTF-8")
+    @RequestMapping(value = "/review", method = POST,produces = "application/json;charset=UTF-8", consumes = "application/json;charset=UTF-8")
     @ResponseBody
     @Protected(roles = {UserRole.USER})
     public Object saveReview(@RequestBody String reviewJson, PrincipalUser principal) {

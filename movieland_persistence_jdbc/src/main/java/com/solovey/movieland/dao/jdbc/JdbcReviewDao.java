@@ -46,7 +46,7 @@ public class JdbcReviewDao implements ReviewDao {
 
     @Override
     public Review addReview(Review review) {
-        log.info("Start inserting review {} into DB", review.toString());
+        log.info("Start inserting review {} into DB", review);
         long startTime = System.currentTimeMillis();
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
