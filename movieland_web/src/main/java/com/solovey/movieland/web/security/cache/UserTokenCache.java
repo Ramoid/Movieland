@@ -1,10 +1,10 @@
-package com.solovey.movieland.web.util.security.cache;
+package com.solovey.movieland.web.security.cache;
 
 
 import com.solovey.movieland.entity.User;
-import com.solovey.movieland.web.util.security.entity.TokenCacheUser;
-import com.solovey.movieland.web.util.security.exceptions.UserNotFoundException;
-import com.solovey.movieland.web.util.security.exceptions.UserTokenExpiredException;
+import com.solovey.movieland.web.security.entity.TokenCacheUser;
+import com.solovey.movieland.web.security.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.security.exceptions.UserTokenExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;

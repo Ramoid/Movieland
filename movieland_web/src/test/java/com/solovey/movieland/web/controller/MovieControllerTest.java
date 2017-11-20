@@ -11,7 +11,7 @@ import com.solovey.movieland.web.util.dto.MovieDto;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
 import com.solovey.movieland.entity.Movie;
-import com.solovey.movieland.web.util.security.entity.PrincipalUser;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
 import org.junit.Before;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
