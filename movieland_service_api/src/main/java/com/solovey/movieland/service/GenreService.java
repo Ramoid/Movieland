@@ -6,9 +6,13 @@ import com.solovey.movieland.entity.Movie;
 import java.util.List;
 
 public interface GenreService {
-    List<Genre> getAllGenres();
+    List<Genre> getAll();
 
     void enrichMoviesWithGenres(List<Movie> movies);
 
     void enrichMovieWithGenres(Movie movie);
+
+    void addGenreMapping(List<Genre> genres,int movieId);
+
+    void removeGenreMappingsByIds(List<Genre> genres, int movieId);
 }

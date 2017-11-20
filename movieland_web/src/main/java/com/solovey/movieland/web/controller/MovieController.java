@@ -1,5 +1,6 @@
 package com.solovey.movieland.web.controller;
 
+import com.solovey.movieland.dao.enums.UserRole;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.dao.enums.Currency;
 import com.solovey.movieland.dao.enums.SortDirection;
@@ -7,6 +8,8 @@ import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.currency.CurrencyService;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
+import com.solovey.movieland.web.security.Protected;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
 @Controller
 @RequestMapping(value = "/movie", method = GET, produces = "application/json;charset=UTF-8")
@@ -97,7 +102,33 @@ public class MovieController {
         }
 
         String jsonMovie = jsonConverter.convertMovieToJson(toDtoConverter.convertMovietoMovieDto(movie));
-        log.info("Movie are received. It took {} ms", System.currentTimeMillis() - startTime);
+        log.info("Movie was received. It took {} ms", System.currentTimeMillis() - startTime);
         return jsonMovie;
+    }
+
+    @RequestMapping(method = POST, consumes = "application/json;charset=UTF-8")
+    @ResponseBody
+    @Protected(roles = {UserRole.ADMIN})
+    public Movie addMovie(@RequestBody String movieJson, PrincipalUser principal) {
+        log.info("Sending request to add movie");
+        long startTime = System.currentTimeMillis();
+        Movie movie = movieService.addMovie(jsonConverter.jsonToObject(movieJson, Movie.class));
+
+        log.info("Movie {} was added. It took {} ms", movie, System.currentTimeMillis() - startTime);
+        return movie;
+    }
+
+    @RequestMapping(value = "/{movieId}", method = PUT, consumes = "application/json;charset=UTF-8")
+    @ResponseBody
+    @Protected(roles = {UserRole.ADMIN})
+    public void editMovie(@RequestBody String movieJson, @PathVariable int movieId, PrincipalUser principal) {
+        log.info("Sending request to update movie");
+        long startTime = System.currentTimeMillis();
+        Movie movie = jsonConverter.jsonToObject(movieJson, Movie.class);
+        movie.setMovieId(movieId);
+        movieService.editMovie(movie);
+
+        log.info("Movie  was updated. It took {} ms", System.currentTimeMillis() - startTime);
+
     }
 }

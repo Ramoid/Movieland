@@ -6,10 +6,10 @@ public class Movie {
     private int movieId;
     private String nameRussian;
     private String nameNative;
-    private int yearOfRelease;
+    private Integer yearOfRelease;
     private String description;
-    private double rating;
-    private double price;
+    private Double rating;
+    private Double price;
     private String picturePath;
     private List<Genre> genres;
     private List<Country> countries;
@@ -39,7 +39,7 @@ public class Movie {
         this.nameNative = nameNative;
     }
 
-    public int getYearOfRelease() {
+    public Integer getYearOfRelease() {
         return yearOfRelease;
     }
 
@@ -55,7 +55,7 @@ public class Movie {
         this.description = description;
     }
 
-    public double getRating() {
+    public Double getRating() {
         return rating;
     }
 
@@ -63,7 +63,7 @@ public class Movie {
         this.rating = rating;
     }
 
-    public double getPrice() {
+    public Double getPrice() {
         return price;
     }
 

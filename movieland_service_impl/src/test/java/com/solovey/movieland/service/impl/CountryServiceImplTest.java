@@ -31,7 +31,7 @@ public class CountryServiceImplTest {
         Movie actualMovie = createMovieList().get(0);
 
         CountryDao mockCountryDao = mock(CountryDao.class);
-        when(mockCountryDao.getAllCountries()).thenReturn(actualCountries);
+        when(mockCountryDao.getAll()).thenReturn(actualCountries);
 
         CountryServiceImpl countryService = new CountryServiceImpl(mockCountryDao);
 
@@ -51,7 +51,7 @@ public class CountryServiceImplTest {
 
 
         CountryDao mockCountryDao = mock(CountryDao.class);
-        when(mockCountryDao.getAllCountries()).thenReturn(actualCountries);
+        when(mockCountryDao.getAll()).thenReturn(actualCountries);
 
         CountryServiceImpl countryService = new CountryServiceImpl(mockCountryDao);
 

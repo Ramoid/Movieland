@@ -9,6 +9,7 @@ import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -54,6 +55,30 @@ public class MovieServiceImpl implements MovieService {
         countryService.enrichMovieWithCountries(movie);
         reviewService.enrichMovieWithReviews(movie);
         return movie;
+    }
+
+    @Override
+    @Transactional
+    public Movie addMovie(Movie movie) {
+        Movie movieToReturn = movieDao.addMovie(movie);
+        genreService.addGenreMapping(movieToReturn.getGenres(), movieToReturn.getMovieId());
+        countryService.addCountryMapping(movieToReturn.getCountries(), movieToReturn.getMovieId());
+        return movieToReturn;
+    }
+
+    @Override
+    @Transactional
+    public void editMovie(Movie movie) {
+
+        movieDao.editMovie(movie);
+        if (movie.getGenres() != null) {
+            genreService.removeGenreMappingsByIds(movie.getGenres(), movie.getMovieId());
+            genreService.addGenreMapping(movie.getGenres(), movie.getMovieId());
+        }
+        if (movie.getCountries() != null) {
+            countryService.removeCountryMappingsByIds(movie.getCountries(), movie.getMovieId());
+            countryService.addCountryMapping(movie.getCountries(), movie.getMovieId());
+        }
     }
 
 

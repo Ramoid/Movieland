@@ -9,10 +9,13 @@ import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.IOException;
 
-
+@EnableTransactionManagement
 @Configuration
 @Import({QueryConfig.class, CacheSchedulerConfig.class})
 @ComponentScan(basePackages = {"com.solovey.movieland.dao.jdbc"})
@@ -42,6 +45,13 @@ public class DataConfig {
         ds.setInitialSize(5);
         ds.setMaxActive(10);
         return ds;
+    }
+
+    @Bean
+    public PlatformTransactionManager transactionManager() {
+        DataSourceTransactionManager transactionManager = new DataSourceTransactionManager();
+        transactionManager.setDataSource(dataSource());
+        return transactionManager;
     }
 
     @Bean

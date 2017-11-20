@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util.security.entity;
+package com.solovey.movieland.web.security.entity;
 
 
 import com.solovey.movieland.entity.User;

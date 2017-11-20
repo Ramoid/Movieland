@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util;
+package com.solovey.movieland.web;
 
 
 import com.solovey.movieland.dao.enums.UserRole;
@@ -6,12 +6,12 @@ import com.solovey.movieland.entity.User;
 import com.solovey.movieland.service.UserService;
 import com.solovey.movieland.web.util.dto.ExceptionDto;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
-import com.solovey.movieland.web.util.security.AuthenticationService;
-import com.solovey.movieland.web.util.security.Protected;
-import com.solovey.movieland.web.util.security.SecurityHttpRequestWrapper;
-import com.solovey.movieland.web.util.security.entity.PrincipalUser;
-import com.solovey.movieland.web.util.security.exceptions.UserNotFoundException;
-import com.solovey.movieland.web.util.security.exceptions.UserTokenExpiredException;
+import com.solovey.movieland.web.security.AuthenticationService;
+import com.solovey.movieland.web.security.Protected;
+import com.solovey.movieland.web.security.SecurityHttpRequestWrapper;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
+import com.solovey.movieland.web.security.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.security.exceptions.UserTokenExpiredException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -72,7 +72,7 @@ public class RequestInterceptor extends HandlerInterceptorAdapter {
             }
         } else if(rolesOprional.isPresent()){
             log.info("Request with empty uuid and role needed");
-            writeResponseOnFail(response, HttpServletResponse.SC_FORBIDDEN, "Guest do not have access to this function");
+            writeResponseOnFail(response, HttpServletResponse.SC_FORBIDDEN, "Guest does not have permission to do this action");
             return false;
         }
 

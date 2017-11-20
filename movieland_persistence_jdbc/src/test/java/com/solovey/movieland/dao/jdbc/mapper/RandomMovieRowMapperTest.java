@@ -35,7 +35,7 @@ public class RandomMovieRowMapperTest {
         assertEquals(actualMovie.getPicturePath(), "Test path");
         assertEquals(actualMovie.getPrice(), 123.12, 0);
         assertEquals(actualMovie.getRating(), 1.1, 0);
-        assertEquals(actualMovie.getYearOfRelease(), 3000);
+        assertEquals(actualMovie.getYearOfRelease(), new Integer(3000));
         assertEquals(actualMovie.getDescription(), "Test description");
         int countryId = actualMovie.getCountries().get(0).getId();
         assertEquals(countryId, 1);

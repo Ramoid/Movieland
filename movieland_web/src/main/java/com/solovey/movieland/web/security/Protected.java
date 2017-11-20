@@ -1,4 +1,4 @@
-package com.solovey.movieland.web.util.security;
+package com.solovey.movieland.web.security;
 
 
 import com.solovey.movieland.dao.enums.UserRole;
