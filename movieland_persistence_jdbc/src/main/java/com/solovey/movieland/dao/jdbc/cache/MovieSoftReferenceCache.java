@@ -7,6 +7,7 @@ import com.solovey.movieland.entity.Movie;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
@@ -19,19 +20,17 @@ import java.util.concurrent.ConcurrentHashMap;
 
 @Service
 @Primary
-@Profile("SoftReferenceCache")
+@Profile("soft.seference.cache")
 public class MovieSoftReferenceCache implements MovieDao {
 
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private ConcurrentHashMap<Integer, Reference<Movie>> movieCache = new ConcurrentHashMap<>();
 
+    @Autowired
+    @Qualifier("jdbcMovieDao")
     private MovieDao movieDao;
 
-    @Autowired
-    public MovieSoftReferenceCache(MovieDao movieDao) {
-        this.movieDao = movieDao;
-    }
 
     @Override
     public List<Movie> getAllMovies(Map<String, SortDirection> sortType) {
