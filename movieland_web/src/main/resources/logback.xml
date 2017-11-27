@@ -40,14 +40,13 @@
         <password>appender666</password>
 
         <to>sergeysolovey1981@gmail.com</to>
-        <to>trubintolik@gmail.com</to> <!-- additional destinations are possible -->
+        <to>trubintolik@gmail.com</to>
         <from>smtpappender@ukr.net</from>
         <subject>Lg-03: %logger{20} - %m</subject>
         <layout class="ch.qos.logback.classic.PatternLayout">
             <pattern>%date %-5level %logger{35} - %message%n</pattern>
         </layout>
         <cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
-            <!-- send just one log entry per email -->
             <bufferSize>1</bufferSize>
         </cyclicBufferTracker>
     </appender>
