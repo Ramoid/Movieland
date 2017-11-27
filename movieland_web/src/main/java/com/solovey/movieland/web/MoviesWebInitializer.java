@@ -27,7 +27,7 @@ public class MoviesWebInitializer extends AbstractAnnotationConfigDispatcherServ
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         super.onStartup(servletContext);
-        servletContext.setInitParameter("spring.profiles.default", "LRUCache");
+        servletContext.setInitParameter("spring.profiles.default", "lrucache.linked.hash.map");
     }
 
 }

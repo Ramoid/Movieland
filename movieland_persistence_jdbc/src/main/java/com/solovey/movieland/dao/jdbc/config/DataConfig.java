@@ -2,7 +2,7 @@ package com.solovey.movieland.dao.jdbc.config;
 
 import javax.sql.DataSource;
 
-import com.solovey.movieland.dao.jdbc.cache.CacheSchedulerConfig;
+import com.solovey.movieland.dao.jdbc.cache.JdbcCachesConfig;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -13,11 +13,9 @@ import org.springframework.jdbc.datasource.DataSourceTransactionManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import java.io.IOException;
-
 @EnableTransactionManagement
 @Configuration
-@Import({QueryConfig.class, CacheSchedulerConfig.class})
+@Import({QueryConfig.class, JdbcCachesConfig.class})
 @ComponentScan(basePackages = {"com.solovey.movieland.dao.jdbc"})
 @PropertySource("classpath:database.properties")
 public class DataConfig {
