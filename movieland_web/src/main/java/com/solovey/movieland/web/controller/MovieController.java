@@ -4,6 +4,7 @@ import com.solovey.movieland.dao.enums.UserRole;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.dao.enums.Currency;
 import com.solovey.movieland.dao.enums.SortDirection;
+import com.solovey.movieland.service.MovieRateService;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.currency.CurrencyService;
@@ -31,14 +32,17 @@ public class MovieController {
     private final JsonJacksonConverter jsonConverter;
     private final ToDtoConverter toDtoConverter;
     private final CurrencyService currencyService;
+    private final MovieRateService movieRateService;
 
     @Autowired
     public MovieController(MovieService movieService, JsonJacksonConverter jsonConverter,
-                           ToDtoConverter toDtoConverter, CurrencyService currencyService) {
+                           ToDtoConverter toDtoConverter, CurrencyService currencyService,
+                           MovieRateService movieRateService) {
         this.movieService = movieService;
         this.jsonConverter = jsonConverter;
         this.toDtoConverter = toDtoConverter;
         this.currencyService = currencyService;
+        this.movieRateService=movieRateService;
     }
 
     @RequestMapping()
@@ -129,6 +133,19 @@ public class MovieController {
         movieService.editMovie(movie);
 
         log.info("Movie  was updated. It took {} ms", System.currentTimeMillis() - startTime);
+
+    }
+
+    @RequestMapping(value="/{movieId}/rate",method = POST, consumes = "application/json;charset=UTF-8")
+    @ResponseBody
+    @Protected(roles = {UserRole.USER})
+    public void rateMovie(@RequestBody String rateJson,@PathVariable int movieId, PrincipalUser principal) {
+        log.info("Sending request to rate movie");
+        long startTime = System.currentTimeMillis();
+        movieRateService.rateMovie(principal.getUserId(),movieId,jsonConverter.extractRate(rateJson));
+
+
+        log.info("Movie {} was rated. It took {} ms", movieId, System.currentTimeMillis() - startTime);
 
     }
 }

@@ -1,9 +1,9 @@
 package com.solovey.movieland.web.controller;
 
 import com.solovey.movieland.web.util.dto.ExceptionDto;
-import com.solovey.movieland.web.util.security.exceptions.BadLoginRequestException;
-import com.solovey.movieland.web.util.security.exceptions.InvalidLoginPasswordException;
-import com.solovey.movieland.web.util.security.exceptions.UserNotFoundException;
+import com.solovey.movieland.web.security.exceptions.BadLoginRequestException;
+import com.solovey.movieland.web.security.exceptions.InvalidLoginPasswordException;
+import com.solovey.movieland.web.security.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

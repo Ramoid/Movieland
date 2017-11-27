@@ -1,7 +1,6 @@
 package com.solovey.movieland.web;
 
-import com.solovey.movieland.web.util.RequestInterceptor;
-import com.solovey.movieland.web.util.security.cache.TokenCacheConfig;
+import com.solovey.movieland.web.security.cache.TokenCacheConfig;
 import com.solovey.movieland.web.util.currency.cache.CurrencyCacheConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

@@ -5,6 +5,7 @@ import com.solovey.movieland.entity.Genre;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Primary;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,12 +21,9 @@ public class GenreCache implements GenreDao {
 
     private volatile List<Genre> genresCache;
 
-    private final GenreDao genreDao;
-
     @Autowired
-    public GenreCache(GenreDao genreDao) {
-        this.genreDao = genreDao;
-    }
+    @Qualifier("jdbcGenreDao")
+    private GenreDao genreDao;
 
     @Override
     public List<Genre> getAll() {
@@ -51,7 +49,7 @@ public class GenreCache implements GenreDao {
     }
 
     @PostConstruct
-    @Scheduled(fixedDelayString = "${genre_cache_refresh_interval}", initialDelayString = "${genre_cache_refresh_interval}")
+    @Scheduled(fixedDelayString = "${genre.cache.refresh.interval}", initialDelayString = "${genre.cache.refresh.interval}")
     private void invalidate() {
         log.info("Start genre cache refresh");
         long startTime = System.currentTimeMillis();

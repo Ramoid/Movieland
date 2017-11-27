@@ -2,8 +2,8 @@ package com.solovey.movieland.web.controller;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
-import com.solovey.movieland.web.util.security.entity.UserToken;
-import com.solovey.movieland.web.util.security.AuthenticationService;
+import com.solovey.movieland.web.security.entity.UserToken;
+import com.solovey.movieland.web.security.AuthenticationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

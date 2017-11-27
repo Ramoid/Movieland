@@ -8,8 +8,8 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 @Configuration
 @EnableScheduling
-@PropertySource("classpath:genre.cache.scheduler.properties")
-public class CacheSchedulerConfig {
+@PropertySource("classpath:jdbc.cache.properties")
+public class JdbcCachesConfig {
     @Bean
     public ThreadPoolTaskScheduler threadPoolTaskScheduler() {
         ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();

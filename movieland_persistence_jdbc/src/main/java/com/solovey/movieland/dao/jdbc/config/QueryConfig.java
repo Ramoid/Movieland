@@ -135,4 +135,21 @@ class QueryConfig {
                 "where movie_id=:movieId " +
                 "and country_id not in (:countryIds)";
     }
+
+    @Bean
+    public String inserMovieRateSql(){
+        return "insert into movies.movie_rates(movie_id,user_id,rate) " +
+                "values (:movieId,:userId,:rate) " +
+                "on duplicate key update rate=:rate";
+    }
+
+    @Bean
+    public String updateMoviesRateSql(){
+        return "update  movies.movie m " +
+                "join  (select movie_id,round(sum(rate)/count(*) ,1) rating " +
+                "from  movies.movie_rates mr " +
+                "where mr.movie_id in (:movieIds) " +
+                "group by movie_id) r on m.movie_id=r.movie_id " +
+                "set m.rating=r.rating";
+    }
 }
