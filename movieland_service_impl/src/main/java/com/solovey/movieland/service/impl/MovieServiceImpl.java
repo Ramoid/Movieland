@@ -29,6 +29,9 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private CountryService countryService;
 
+    @Autowired
+    private MovieParallelEnrichmentService movieParallelEnrichmentService;
+
     @Override
     public List<Movie> getAllMovies(Map<String, SortDirection> sortType) {
         return movieDao.getAllMovies(sortType);
@@ -51,9 +54,7 @@ public class MovieServiceImpl implements MovieService {
     public Movie getMovieById(int movieId) {
 
         Movie movie = movieDao.getMovieById(movieId);
-        genreService.enrichMovieWithGenres(movie);
-        countryService.enrichMovieWithCountries(movie);
-        reviewService.enrichMovieWithReviews(movie);
+        movieParallelEnrichmentService.enrichMovie(movie);
         return movie;
     }
 
