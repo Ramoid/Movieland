@@ -65,7 +65,6 @@ public class MovieParallelEnrichmentService {
                 futureTask.cancel(true);
             } catch (Exception e) {
                 log.error("enrichMovieTask Failed: {}", e);
-                throw new RuntimeException(e);
             } finally {
                 timeSpent = System.nanoTime() - taskStart;
                 totalWaitTime = Math.max(totalWaitTime - timeSpent, 0);
