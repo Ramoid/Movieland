@@ -56,9 +56,9 @@ public class JdbcMovieDao implements MovieDao {
     public List<Movie> getAllMovies(Map<String, SortDirection> sortType) {
         log.info("Start query to get all movies from DB");
         long startTime = System.currentTimeMillis();
-
         List<Movie> movies = jdbcTemplate.query(queryGenerator.addSorting(getAllMoviesSql, sortType), MOVIE_ROW_MAPPER);
         log.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
+
         return movies;
     }
 
@@ -87,9 +87,7 @@ public class JdbcMovieDao implements MovieDao {
     public Movie getMovieById(int movieId) {
         log.info("Start query to get movie by id from DB");
         long startTime = System.currentTimeMillis();
-
         Movie movie = jdbcTemplate.queryForObject(getMovieByIdSql, RANDOM_MOVIE_ROW_MAPPER, movieId);
-
         log.info("Finish query to get movie by id from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movie;
 

@@ -139,17 +139,20 @@ class QueryConfig {
     @Bean
     public String inserMovieRateSql(){
         return "insert into movies.movie_rates(movie_id,user_id,rate) " +
-                "values (:movieId,:userId,:rate) " +
-                "on duplicate key update rate=:rate";
+                "values (?,?,?)";
     }
 
     @Bean
-    public String updateMoviesRateSql(){
-        return "update  movies.movie m " +
-                "join  (select movie_id,round(sum(rate)/count(*) ,1) rating " +
+    public String getMoviesRatingsSql(){
+        return "select movie_id,round(sum(rate)/count(*) ,1) rating,count(*) cnt " +
                 "from  movies.movie_rates mr " +
-                "where mr.movie_id in (:movieIds) " +
-                "group by movie_id) r on m.movie_id=r.movie_id " +
-                "set m.rating=r.rating";
+                "group by movie_id";
     }
+
+    @Bean
+    public String getUserMovieRateCountSql(){
+        return "select count(*) cnt from movies.movie_rates " +
+                "where user_id=? and movie_id=?";
+    }
+
 }
