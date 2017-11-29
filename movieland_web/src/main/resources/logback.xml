@@ -40,7 +40,6 @@
         <password>appender666</password>
 
         <to>sergeysolovey1981@gmail.com</to>
-        <to>trubintolik@gmail.com</to>
         <from>smtpappender@ukr.net</from>
         <subject>Lg-03: %logger{20} - %m</subject>
         <layout class="ch.qos.logback.classic.PatternLayout">
