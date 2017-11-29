@@ -18,5 +18,4 @@ public interface MovieDao {
     Movie addMovie(Movie movie);
 
     void editMovie(Movie movie);
-
 }
