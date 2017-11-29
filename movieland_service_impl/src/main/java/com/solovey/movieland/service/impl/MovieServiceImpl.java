@@ -3,16 +3,14 @@ package com.solovey.movieland.service.impl;
 import com.solovey.movieland.dao.MovieDao;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.dao.enums.SortDirection;
-import com.solovey.movieland.service.CountryService;
-import com.solovey.movieland.service.GenreService;
-import com.solovey.movieland.service.MovieService;
-import com.solovey.movieland.service.ReviewService;
+import com.solovey.movieland.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class MovieServiceImpl implements MovieService {
@@ -29,14 +27,25 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     private CountryService countryService;
 
+    @Autowired
+    private MovieRatingService movieRatingService;
+
     @Override
     public List<Movie> getAllMovies(Map<String, SortDirection> sortType) {
-        return movieDao.getAllMovies(sortType);
+
+        List<Movie> movies = movieDao.getAllMovies(sortType);
+        for (Movie movie : movies) {
+            setMovieRating(movie);
+        }
+        return movies;
     }
 
     @Override
     public List<Movie> getRandomMovies() {
         List<Movie> movies = movieDao.getRandomMovies();
+        for (Movie movie : movies) {
+            setMovieRating(movie);
+        }
         genreService.enrichMoviesWithGenres(movies);
         countryService.enrichMoviesWithCountries(movies);
         return movies;
@@ -44,16 +53,22 @@ public class MovieServiceImpl implements MovieService {
 
     @Override
     public List<Movie> getMoviesByGenreId(int id, Map<String, SortDirection> sortType) {
-        return movieDao.getMoviesByGenreId(id, sortType);
+        List<Movie> movies = movieDao.getMoviesByGenreId(id, sortType);
+        for (Movie movie : movies) {
+            setMovieRating(movie);
+        }
+        return movies;
     }
 
     @Override
     public Movie getMovieById(int movieId) {
 
         Movie movie = movieDao.getMovieById(movieId);
+        setMovieRating(movie);
         genreService.enrichMovieWithGenres(movie);
         countryService.enrichMovieWithCountries(movie);
         reviewService.enrichMovieWithReviews(movie);
+
         return movie;
     }
 
@@ -81,5 +96,10 @@ public class MovieServiceImpl implements MovieService {
         }
     }
 
+    private void setMovieRating(Movie movie) {
+        Optional<Double> rating = movieRatingService.getMovieRating(movie.getMovieId());
+        rating.ifPresent(movie::setRating);
+
+    }
 
 }
