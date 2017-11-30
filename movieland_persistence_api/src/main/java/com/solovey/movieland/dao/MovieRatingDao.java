@@ -11,5 +11,4 @@ import java.util.Map;
 public interface MovieRatingDao {
     void flushRatesToPersistence(List<UserMovieRate> rates);
     Map<Integer,Rating> getMoviesRatings();
-    int getUserMovieRateCount(int userId, int movieId);
 }

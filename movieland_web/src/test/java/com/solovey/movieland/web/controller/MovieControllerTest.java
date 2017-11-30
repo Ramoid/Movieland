@@ -4,7 +4,7 @@ package com.solovey.movieland.web.controller;
 import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.dao.enums.Currency;
 import com.solovey.movieland.dao.enums.SortDirection;
-import com.solovey.movieland.service.MovieRateService;
+import com.solovey.movieland.service.MovieRatingService;
 import com.solovey.movieland.service.MovieService;
 import com.solovey.movieland.web.util.currency.CurrencyService;
 import com.solovey.movieland.web.util.dto.MovieDto;
@@ -36,11 +36,11 @@ import java.util.Map;
 
 public class MovieControllerTest {
 
-    MovieRateService mockMovieRateService;
+    MovieRatingService mockMovieRatingService;
 
     @Before
     public void beforeActions() {
-        mockMovieRateService = mock(MovieRateService.class);
+        mockMovieRatingService = mock(MovieRatingService.class);
     }
 
     @Test
@@ -65,7 +65,7 @@ public class MovieControllerTest {
         CurrencyService mockCurrencyService = mock(CurrencyService.class);
 
         MovieController controller = new MovieController(mockService, mockConverter,
-                mockToDtoConverter, mockCurrencyService, mockMovieRateService);
+                mockToDtoConverter, mockCurrencyService, mockMovieRatingService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         MvcResult result = mockMvc.perform(get("/movie?rating=asc"))
@@ -95,7 +95,7 @@ public class MovieControllerTest {
         CurrencyService mockCurrencyService = mock(CurrencyService.class);
 
         MovieController controller = new MovieController(mockService, mockConverter,
-                mockToDtoConverter, mockCurrencyService, mockMovieRateService);
+                mockToDtoConverter, mockCurrencyService, mockMovieRatingService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(get("/movie/random"))
@@ -138,7 +138,7 @@ public class MovieControllerTest {
         CurrencyService mockCurrencyService = mock(CurrencyService.class);
 
         MovieController controller = new MovieController(mockService, mockConverter,
-                mockToDtoConverter, mockCurrencyService, mockMovieRateService);
+                mockToDtoConverter, mockCurrencyService, mockMovieRatingService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(get("/movie/genre/" + ID + "?rating=asc"))
@@ -177,7 +177,7 @@ public class MovieControllerTest {
 
 
         MovieController controller = new MovieController(mockService, mockConverter,
-                mockToDtoConverter, mockCurrencyService, mockMovieRateService);
+                mockToDtoConverter, mockCurrencyService, mockMovieRatingService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(get("/movie/1?currency=USD"))
@@ -217,7 +217,7 @@ public class MovieControllerTest {
 
 
         MovieController controller = new MovieController(mockService, mockConverter,
-                mockToDtoConverter, mockCurrencyService, mockMovieRateService);
+                mockToDtoConverter, mockCurrencyService, mockMovieRatingService);
         MockMvc mockMvc = standaloneSetup(controller).build();
 
         mockMvc.perform(post("/movie").

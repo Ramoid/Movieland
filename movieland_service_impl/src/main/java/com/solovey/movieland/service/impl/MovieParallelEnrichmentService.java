@@ -29,7 +29,8 @@ public class MovieParallelEnrichmentService {
     @Autowired
     private ReviewService reviewService;
 
-    private ExecutorService threadPool = Executors.newCachedThreadPool();
+    @Autowired
+    private ExecutorService threadPool;
 
 
     void enrichMovie(Movie movie) {

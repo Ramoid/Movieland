@@ -14,6 +14,10 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 @Service
@@ -21,24 +25,24 @@ public class MovieRatingServiceImpl implements MovieRatingService {
 
     private final MovieRatingDao movieRatingDao;
 
-    private Set<UserMovieRate> movieRateBuffer = ConcurrentHashMap.newKeySet();
+    private Queue<UserMovieRate> movieRateBuffer = new ConcurrentLinkedDeque<>();
 
-    private Map<Integer, Rating> moviesRatingCache;
+    private Map<Integer, Rating> moviesRatingCache = new ConcurrentHashMap<>();
 
     @Autowired
     public MovieRatingServiceImpl(MovieRatingDao movieRatingDao) {
         this.movieRatingDao = movieRatingDao;
     }
 
+    private ReentrantReadWriteLock reentrantReadWriteLock = new ReentrantReadWriteLock();
+    private Lock readLock = reentrantReadWriteLock.readLock();
+    private Lock writeLock = reentrantReadWriteLock.writeLock();
+
 
     @Override
-    public void rateMovie(int userId, int movieId, double rate) {
-        UserMovieRate userMovieRate = new UserMovieRate();
-        userMovieRate.setMovieId(movieId);
-        userMovieRate.setRating(rate);
-        userMovieRate.setUserId(userId);
+    public void rateMovie(UserMovieRate userMovieRate) {
 
-        if (!isMovieRatedByUser(userMovieRate) && movieRatingDao.getUserMovieRateCount(userId, movieId) == 0) {
+        if (!isMovieRatedByUser(userMovieRate)) {
             movieRateBuffer.add(userMovieRate);
             calculateMovieRating(userMovieRate);
         } else {
@@ -50,34 +54,40 @@ public class MovieRatingServiceImpl implements MovieRatingService {
     public Optional<Double> getMovieRating(int movieId) {
         Rating rating = moviesRatingCache.get(movieId);
         if (rating != null) {
-            return Optional.of(rating.getRating());
+            return Optional.of(Double.longBitsToDouble(rating.getRating().get()));
         }
         return Optional.empty();
     }
 
     private void calculateMovieRating(UserMovieRate userMovieRate) {
-        //atomic
-        moviesRatingCache.compute(userMovieRate.getMovieId(), (k, v) -> {
-            if (v == null) {
-                return new Rating(userMovieRate.getRating(), 1);
-            } else {
-                int ratesCount = v.getRatesCount();
-                double rating = new BigDecimal((v.getRating() * ratesCount + userMovieRate.getRating()) / (ratesCount + 1)).setScale(1, RoundingMode.UP).doubleValue();
-
-                v.setRating(rating);
-                v.setRatesCount(ratesCount + 1);
-                return v;
-            }
+        boolean[] wasAbsent = {false};
+        moviesRatingCache.computeIfAbsent(userMovieRate.getMovieId(), v -> {
+            wasAbsent[0] = true;
+            return new Rating(userMovieRate.getRating(), 1);
         });
+
+        if (!wasAbsent[0]) {
+            Rating rating = moviesRatingCache.get(userMovieRate.getMovieId());
+            rating.getRating().updateAndGet(x -> {
+                int ratesCount = rating.getRatesCount().incrementAndGet();
+                return Double.doubleToLongBits(new BigDecimal((Double.longBitsToDouble(x) * (ratesCount - 1) + userMovieRate.getRating()) / ratesCount).setScale(1, RoundingMode.UP).doubleValue());
+            });
+
+        }
 
     }
 
     private boolean isMovieRatedByUser(UserMovieRate userMovieRate) {
-        for (UserMovieRate bufferedUserMovieRate : movieRateBuffer) {
-            if (userMovieRate.getMovieId() == bufferedUserMovieRate.getMovieId() &
-                    userMovieRate.getUserId() == bufferedUserMovieRate.getUserId()) {
-                return true;
+        readLock.lock();
+        try {
+            for (UserMovieRate bufferedUserMovieRate : movieRateBuffer) {
+                if (userMovieRate.getMovieId() == bufferedUserMovieRate.getMovieId() &&
+                        userMovieRate.getUserId() == bufferedUserMovieRate.getUserId()) {
+                    return true;
+                }
             }
+        } finally {
+            readLock.unlock();
         }
         return false;
     }
@@ -85,20 +95,25 @@ public class MovieRatingServiceImpl implements MovieRatingService {
 
     @Scheduled(fixedDelayString = "${rates.flush.interval}", initialDelayString = "${rates.flush.interval}")
     private void flushRatesToPersistence() {
-        List<UserMovieRate> rates = new ArrayList<>();
-        Iterator<UserMovieRate> iterator = movieRateBuffer.iterator();
-        while (iterator.hasNext()) {
-            rates.add(iterator.next());
-            iterator.remove();
-        }
-        if (rates.size() > 0) {
-            movieRatingDao.flushRatesToPersistence(rates);
+        writeLock.lock();
+        try {
+            if (!movieRateBuffer.isEmpty()) {
+                List<UserMovieRate> rates = new ArrayList<>();
+                Iterator<UserMovieRate> iterator = movieRateBuffer.iterator();
+                while (iterator.hasNext()) {
+                    rates.add(iterator.next());
+                    iterator.remove();
+                }
+                movieRatingDao.flushRatesToPersistence(rates);
+            }
+        } finally {
+            writeLock.unlock();
         }
     }
 
     @PostConstruct
     private void invalidate() {
-        moviesRatingCache = movieRatingDao.getMoviesRatings();
+        moviesRatingCache.putAll(movieRatingDao.getMoviesRatings());
     }
 
 

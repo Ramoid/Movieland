@@ -17,9 +17,9 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
 @Repository
@@ -39,9 +39,6 @@ public class JdbcMovieRatingDao implements MovieRatingDao {
 
     @Autowired
     private String getMoviesRatingsSql;
-
-    @Autowired
-    private String getUserMovieRateCountSql;
 
 
     @Override
@@ -66,7 +63,6 @@ public class JdbcMovieRatingDao implements MovieRatingDao {
         });
 
 
-
         log.info("Finish inserting movies rates into DB. It took {} ms", System.currentTimeMillis() - startTime);
     }
 
@@ -74,26 +70,18 @@ public class JdbcMovieRatingDao implements MovieRatingDao {
     public Map<Integer, Rating> getMoviesRatings() {
         log.info("Start getting movies ratings from DB");
         long startTime = System.currentTimeMillis();
-        Map<Integer,Rating> moviesRatings = new ConcurrentHashMap<>();
+        Map<Integer, Rating> moviesRatings = new HashMap<>();
 
         SqlRowSet sqlRowSet = jdbcTemplate.queryForRowSet(getMoviesRatingsSql);
         while (sqlRowSet.next()) {
-            Rating rating = new Rating(sqlRowSet.getDouble("rating"),sqlRowSet.getInt("cnt"));
-            moviesRatings.put(sqlRowSet.getInt("movie_id"),rating);
+            Rating rating = new Rating(sqlRowSet.getDouble("rating"), sqlRowSet.getInt("cnt"));
+            moviesRatings.put(sqlRowSet.getInt("movie_id"), rating);
         }
 
         log.info("Finish getting movies ratings from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return moviesRatings;
     }
 
-    @Override
-    public int getUserMovieRateCount(int userId, int movieId) {
-        log.info("Start getting user movie rate count from DB");
-        long startTime = System.currentTimeMillis();
-        int count = jdbcTemplate.queryForObject(getUserMovieRateCountSql,Integer.class,userId,movieId);
-        log.info("Finish getting user movie rate count from DB. It took {} ms", System.currentTimeMillis() - startTime);
-        return count;
-    }
 
 }
 

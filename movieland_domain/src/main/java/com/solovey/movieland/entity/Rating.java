@@ -1,27 +1,30 @@
 package com.solovey.movieland.entity;
 
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Rating {
-    private double rating;
-    private int ratesCount;
+    private AtomicLong rating;
+    private AtomicInteger ratesCount;
 
     public Rating(double rating, int ratesCount) {
-        this.rating = rating;
-        this.ratesCount = ratesCount;
+        this.rating = new AtomicLong(Double.doubleToLongBits(rating));
+        this.ratesCount = new AtomicInteger(ratesCount);
     }
 
-    public double getRating() {
+    public AtomicLong getRating() {
         return rating;
     }
 
-    public void setRating(double rating) {
+    public void setRating(AtomicLong rating) {
         this.rating = rating;
     }
 
-    public int getRatesCount() {
+    public AtomicInteger getRatesCount() {
         return ratesCount;
     }
 
-    public void setRatesCount(int ratesCount) {
+    public void setRatesCount(AtomicInteger ratesCount) {
         this.ratesCount = ratesCount;
     }
 }
