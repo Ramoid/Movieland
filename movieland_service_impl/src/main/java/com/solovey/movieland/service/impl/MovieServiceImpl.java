@@ -28,6 +28,9 @@ public class MovieServiceImpl implements MovieService {
     private CountryService countryService;
 
     @Autowired
+    private MovieParallelEnrichmentService movieParallelEnrichmentService;
+
+    @Autowired
     private MovieRatingService movieRatingService;
 
     @Override
@@ -65,10 +68,7 @@ public class MovieServiceImpl implements MovieService {
 
         Movie movie = movieDao.getMovieById(movieId);
         setMovieRating(movie);
-        genreService.enrichMovieWithGenres(movie);
-        countryService.enrichMovieWithCountries(movie);
-        reviewService.enrichMovieWithReviews(movie);
-
+        movieParallelEnrichmentService.enrichMovie(movie);
         return movie;
     }
 
