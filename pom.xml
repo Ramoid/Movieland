@@ -41,6 +41,12 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- ConcurrentLinkedHashMap -->
+            <dependency>
+                <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+                <artifactId>concurrentlinkedhashmap-lru</artifactId>
+                <version>1.4.2</version>
+            </dependency>
             <!-- jBCrypt -->
             <dependency>
                 <groupId>de.svenkubiak</groupId>

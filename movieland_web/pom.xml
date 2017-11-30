@@ -33,6 +33,7 @@
     </build>
 
     <dependencies>
+
         <!-- jBCrypt -->
         <dependency>
             <groupId>de.svenkubiak</groupId>

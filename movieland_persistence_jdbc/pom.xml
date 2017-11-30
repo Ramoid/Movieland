@@ -12,6 +12,11 @@
     <artifactId>movieland-persistence-jdbc</artifactId>
 
     <dependencies>
+        <!-- ConcurrentLinkedHashMap -->
+        <dependency>
+            <groupId>com.googlecode.concurrentlinkedhashmap</groupId>
+            <artifactId>concurrentlinkedhashmap-lru</artifactId>
+        </dependency>
 
         <!-- Spring -->
         <dependency>
