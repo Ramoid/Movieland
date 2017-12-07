@@ -9,7 +9,12 @@ import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.dao.enums.Currency;
+import com.solovey.movieland.entity.reporting.Report;
+import com.solovey.movieland.entity.reporting.ReportOutputType;
+import com.solovey.movieland.entity.reporting.ReportState;
+import com.solovey.movieland.entity.reporting.ReportType;
 import com.solovey.movieland.web.security.entity.LoginRequest;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
 import com.solovey.movieland.web.security.exceptions.BadLoginRequestException;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import org.slf4j.Logger;
@@ -19,10 +24,14 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class JsonJacksonConverter {
     private final Logger log = LoggerFactory.getLogger(getClass());
+
+    private final Pattern datePattern = Pattern.compile("^[\\d]{4}-[\\d]{2}-[\\d]{2}$");
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -45,7 +54,7 @@ public class JsonJacksonConverter {
 
     }
 
-    public double extractRate(String jsonRate){
+    public double extractRate(String jsonRate) {
 
         JsonNode root = null;
         try {
@@ -157,6 +166,40 @@ public class JsonJacksonConverter {
             log.error("Error parsing incoming json{} exception {}", json, e);
             throw new RuntimeException(e);
         }
+    }
+
+    public Report parseJsonToReport(String jsonReport, PrincipalUser user, String link) {
+
+        try {
+            JsonNode root = objectMapper.readTree(jsonReport);
+
+            Matcher matcher;
+
+            Report report = new Report();
+            report.setUserId(user.getUserId());
+            report.setUserEmail(user.getName());
+            report.setLink(link);
+            String dateFrom = root.at("/dateFrom").asText();
+            matcher = datePattern.matcher(dateFrom);
+            if (matcher.matches()) {
+                report.setDateFrom(java.sql.Date.valueOf(dateFrom));
+            }
+            String dateTo = root.at("/dateTo").asText();
+            matcher = datePattern.matcher(dateTo);
+            if (matcher.matches()) {
+                report.setDateTo(java.sql.Date.valueOf(dateTo));
+            }
+            report.setReportType(ReportType.getReportType(root.at("/reportType").asText()));
+            report.setReportOutputType(ReportOutputType.getReportOutputType(root.at("/reportOutputType").asText()));
+            report.setReportState(ReportState.NEW);
+
+            return report;
+        } catch (IOException e) {
+            log.error("Error parsing incoming json{} exception {}", jsonReport, e);
+            throw new RuntimeException("parseJsonToReport Error parsing incoming json " + jsonReport, e);
+        }
+
+
     }
 
 

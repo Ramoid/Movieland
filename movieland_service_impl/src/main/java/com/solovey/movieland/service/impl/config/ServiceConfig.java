@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
+import java.io.*;
+import java.util.Properties;
 import java.util.concurrent.SynchronousQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -22,11 +24,24 @@ public class ServiceConfig {
     private int threadPoolSize;
 
     @Bean
-    public ThreadPoolExecutor threadPoolExecutor(){
-        return new  ThreadPoolExecutor(0, threadPoolSize,
+    public ThreadPoolExecutor threadPoolExecutor() {
+        return new ThreadPoolExecutor(0, threadPoolSize,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>());
 
+    }
+
+    @Bean
+    public Properties emailAppenderProperties() {
+        Properties properties = new Properties();
+
+        try (InputStream input = getClass().getClassLoader().getResourceAsStream("email.sender.properties");) {
+            properties.load(input);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        return properties;
     }
 
 }
