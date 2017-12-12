@@ -1,4 +1,4 @@
-package com.solovey.movieland.service.impl.generator;
+package com.solovey.movieland.service.impl.reporting;
 
 
 import com.solovey.movieland.entity.reporting.Report;

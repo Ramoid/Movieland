@@ -3,10 +3,12 @@ package com.solovey.movieland.web.controller;
 import com.solovey.movieland.dao.enums.UserRole;
 
 import com.solovey.movieland.service.ReportingService;
+import com.solovey.movieland.service.impl.reporting.ReportNotFoundException;
 import com.solovey.movieland.web.security.Protected;
 import com.solovey.movieland.web.security.entity.PrincipalUser;
 import com.solovey.movieland.web.util.ReportFileDao;
 import com.solovey.movieland.web.util.dto.ReportDto;
+import com.solovey.movieland.web.util.dto.ReportLinkDto;
 import com.solovey.movieland.web.util.dto.ReportStatusDto;
 import com.solovey.movieland.web.util.dto.ToDtoConverter;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
@@ -24,6 +26,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -37,6 +41,7 @@ public class ReportingController {
     private JsonJacksonConverter jsonConverter;
     private ToDtoConverter toDtoConverter;
     private ReportFileDao reportFileDao;
+    private final Pattern pattern = Pattern.compile("(^.+report/)(.+$)");
 
     @Autowired
     public ReportingController(ReportingService reportingService, JsonJacksonConverter jsonJacksonConverter,
@@ -96,15 +101,20 @@ public class ReportingController {
 
     }
 
-    @RequestMapping(value = "/{reportId}", method = GET, produces = MediaType.TEXT_PLAIN_VALUE)
+    @RequestMapping(value = "/{reportId}", method = GET, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
     @Protected(roles = {UserRole.ADMIN})
-    public String getReportLink(@PathVariable String reportId, PrincipalUser principal, HttpServletRequest request) {
-        System.out.println(request.getRequestURL());
-        System.out.println(request.getContextPath());
-        System.out.println(request.getPathTranslated());
-        System.out.println(request.getPathInfo());
-        return reportingService.getReportMetadata(reportId, principal.getUserId()).getPath();
+    public ReportLinkDto getReportLink(@PathVariable String reportId, PrincipalUser principal, HttpServletRequest request) {
+
+        Matcher matcher = pattern.matcher(request.getRequestURL());
+        if (matcher.find()) {
+            String path = reportingService.getReportMetadata(reportId, principal.getUserId()).getPath();
+            if (path != null) {
+                return new ReportLinkDto(matcher.group(1) + new File(path).getName());
+            }
+        }
+
+        throw new ReportNotFoundException();
 
     }
 

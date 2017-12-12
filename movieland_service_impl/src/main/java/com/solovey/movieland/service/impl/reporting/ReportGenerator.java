@@ -1,4 +1,4 @@
-package com.solovey.movieland.service.impl.generator;
+package com.solovey.movieland.service.impl.reporting;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.BaseFont;
@@ -129,7 +129,7 @@ public class ReportGenerator {
     public String generateTopUsersPdfReport(List<ReportTopUser> topUsers, Report report) {
         File pdflFile = createReportFile(report);
         Document document = new Document();
-        PdfWriter writer=null;
+        PdfWriter writer = null;
 
         try {
             writer = PdfWriter.getInstance(document, new FileOutputStream(pdflFile));
@@ -160,7 +160,7 @@ public class ReportGenerator {
             throw new RuntimeException("error creating pdf report ", e);
         } finally {
             document.close();
-            if (writer!=null) {
+            if (writer != null) {
                 writer.close();
             }
 
@@ -173,45 +173,42 @@ public class ReportGenerator {
         Document document = new Document();
 
 
-        PdfWriter writer=null;
+        PdfWriter writer = null;
         try {
             BaseFont bf = BaseFont.createFont("OpenSans-Regular.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED); //подключаем файл шрифта, который поддерживает кириллицу
             com.itextpdf.text.Font font = new com.itextpdf.text.Font(bf); //FontFactory.getFont("arial.ttf", BaseFont.IDENTITY_H, BaseFont.EMBEDDED,0.8f);
             writer = PdfWriter.getInstance(document, new FileOutputStream(pdflFile));
             document.open();
 
-            PdfPTable table = new PdfPTable(9);
-            table.setWidthPercentage(100);
-            table.setSpacingBefore(10f);
-            table.setSpacingAfter(10f);
 
-            float[] columnWidths = {1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f, 1f};
-            table.setWidths(columnWidths);
+            Paragraph paragraph = new Paragraph();
 
             for (ReportMovie movie : movies) {
-                table.addCell(String.valueOf(movie.getMovieId()));
-                table.addCell(movie.getTitle());
-                table.addCell(new Phrase(movie.getDescription(),font));
-                table.addCell(movie.getGenre());
-                table.addCell(String.valueOf(movie.getPrice()));
-                table.addCell(movie.getAddedDate().toString());
-                table.addCell(movie.getModifiedDate().toString());
-                table.addCell(String.valueOf(movie.getRating()));
-                table.addCell(String.valueOf(movie.getReviewsCount()));
+
+                document.add(new Paragraph(String.valueOf(movie.getMovieId()), font));
+                document.add(new Paragraph(movie.getTitle(), font));
+                document.add(new Paragraph(movie.getDescription(), font));
+                document.add(new Paragraph(movie.getGenre(), font));
+                document.add(new Paragraph(String.valueOf(movie.getPrice()), font));
+                document.add(new Paragraph(movie.getAddedDate().toString(), font));
+                document.add(new Paragraph(movie.getModifiedDate().toString(), font));
+                document.add(new Paragraph(String.valueOf(movie.getRating()), font));
+                document.add(new Paragraph(String.valueOf(movie.getReviewsCount()), font));
+
+
             }
 
-            document.add(table);
 
             return pdflFile.getPath();
 
-        } catch ( DocumentException | IOException e) {
+        } catch (DocumentException | IOException e) {
             report.setReportState(ReportState.ERROR);
             log.error(" error creating pdf report ", e);
             throw new RuntimeException("error creating pdf report ", e);
 
         } finally {
             document.close();
-            if (writer!=null) {
+            if (writer != null) {
                 writer.close();
             }
 

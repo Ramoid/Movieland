@@ -3,8 +3,9 @@ package com.solovey.movieland.service.impl;
 import com.solovey.movieland.dao.ReportingDao;
 import com.solovey.movieland.entity.reporting.*;
 import com.solovey.movieland.service.ReportingService;
-import com.solovey.movieland.service.impl.generator.EmailSender;
-import com.solovey.movieland.service.impl.generator.ReportGenerator;
+import com.solovey.movieland.service.impl.reporting.EmailSender;
+import com.solovey.movieland.service.impl.reporting.ReportGenerator;
+import com.solovey.movieland.service.impl.reporting.ReportNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.io.File;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -31,7 +33,7 @@ public class ReportingServiceImpl implements ReportingService {
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     @Autowired
-    @Qualifier("singleThreadPoolExecutor")
+    @Qualifier("fixedThreadPoolExecutor")
     private ExecutorService singleThreadPoolExecutor;
 
     @Autowired
@@ -58,7 +60,7 @@ public class ReportingServiceImpl implements ReportingService {
                 if (report.getUserId() == userId) {
                     return report.getReportState();
                 } else {
-                    throw new RuntimeException("You do not have access to this report");
+                    throw new SecurityException("You do not have access to this report");
                 }
             }
             for (Report report1 : reportRequests) {
@@ -66,11 +68,11 @@ public class ReportingServiceImpl implements ReportingService {
                     if (report1.getUserId() == userId) {
                         return ReportState.NEW;
                     } else {
-                        throw new RuntimeException("You do not have access to this report");
+                        throw new SecurityException("You do not have access to this report");
                     }
                 }
             }
-            throw new RuntimeException("Report id does not exist");
+            throw new ReportNotFoundException();
         } finally {
             lock.readLock().unlock();
         }
@@ -106,7 +108,7 @@ public class ReportingServiceImpl implements ReportingService {
         if (report != null && report.getReportState() == ReportState.READY && report.getUserId() == userId) {
             return report;
         }
-        throw new RuntimeException("Report does not exist or in progress");
+        throw new ReportNotFoundException();
     }
 
     @Override
@@ -119,7 +121,7 @@ public class ReportingServiceImpl implements ReportingService {
                 if (report.getReportId().equals(reportId)) {
                     if (report.getUserId() == userId) {
                         iterator.remove();
-                        log.info("Report {} has been removed from queue", report.getReportType().getTypeName());
+                        log.info("Report {} has been removed from queue", report.getReportId());
                         return;
                     } else {
                         throw new SecurityException("You cannot remove this report");
@@ -135,21 +137,23 @@ public class ReportingServiceImpl implements ReportingService {
             if (report.getUserId() != userId) {
                 throw new SecurityException("You cannot remove this report");
             }
+            reportsMetadataCache.remove(reportId);
+
             if (report.getReportState() != ReportState.IN_PROGRESS) {
-                reportsMetadataCache.remove(reportId);
                 deleteReportFile(report);
                 reportingDao.removeReportMetadata(reportId);
-                log.info("Report {} has been removed", report.getReportType().getTypeName());
+                log.info("Report {} has been removed", report.getReportId());
             } else {
                 singleThreadPoolExecutor.submit(() -> {
-                    while (report.getReportState() == ReportState.IN_PROGRESS) {
-                        if (Thread.currentThread().isInterrupted()) {
-                            break;
-                        }
+                    try {
+                        report.getCountDownLatch().await();
+                        deleteReportFile(report);
+                    } catch (InterruptedException e) {
+                        log.warn("thread that deletes report is interrupted");
                     }
-                    deleteReportFile(report);
-                    reportingDao.removeReportMetadata(reportId);
 
+                    reportingDao.removeReportMetadata(reportId);
+                    log.info("Report {} has been removed", report.getReportId());
                 });
 
             }
@@ -185,7 +189,9 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     private void reportGenerationTask(Report report) {
+        report.setCountDownLatch(new CountDownLatch(1));
         report.setReportState(ReportState.IN_PROGRESS);
+
         reportsMetadataCache.put(report.getReportId(), report);
         String reportFilePath;
 
@@ -212,8 +218,8 @@ public class ReportingServiceImpl implements ReportingService {
         if (report.getReportState() != ReportState.ERROR) {
             report.setReportState(ReportState.READY);
         }
-
         reportingDao.saveReportMetadata(report);
+        report.getCountDownLatch().countDown();
         emailSender.sendEmail(report);
 
     }

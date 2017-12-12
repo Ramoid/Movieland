@@ -4,6 +4,7 @@ package com.solovey.movieland.entity.reporting;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.time.LocalDate;
+import java.util.concurrent.CountDownLatch;
 
 public class Report {
     private LocalDate dateFrom;
@@ -15,6 +16,15 @@ public class Report {
     private ReportState reportState;
     private String reportId;
     private String userEmail;
+    private CountDownLatch countDownLatch;
+
+    public CountDownLatch getCountDownLatch() {
+        return countDownLatch;
+    }
+
+    public void setCountDownLatch(CountDownLatch countDownLatch) {
+        this.countDownLatch = countDownLatch;
+    }
 
     public LocalDate getDateFrom() {
         return dateFrom;

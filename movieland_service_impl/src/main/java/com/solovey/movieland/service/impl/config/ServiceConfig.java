@@ -32,9 +32,9 @@ public class ServiceConfig {
     }
 
     @Bean
-    @Qualifier("singleThreadPoolExecutor")
-    public ExecutorService singleThreadPoolExecutor() {
-        return Executors.newSingleThreadExecutor();
+    @Qualifier("fixedThreadPoolExecutor")
+    public ExecutorService fixedThreadPoolExecutor() {
+        return Executors.newFixedThreadPool(2);
     }
 
     @Bean

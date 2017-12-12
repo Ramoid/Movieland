@@ -1,5 +1,6 @@
 package com.solovey.movieland.web.controller;
 
+import com.solovey.movieland.service.impl.reporting.ReportNotFoundException;
 import com.solovey.movieland.web.util.dto.ExceptionDto;
 import com.solovey.movieland.web.security.exceptions.BadLoginRequestException;
 import com.solovey.movieland.web.security.exceptions.InvalidLoginPasswordException;
@@ -23,6 +24,18 @@ public class ExceptionsHandler {
     }
     @ExceptionHandler(InvalidLoginPasswordException.class)
     public ResponseEntity<?> innvalidLoginHandler(InvalidLoginPasswordException e){
+        return new ResponseEntity<>(new ExceptionDto(e.getMessage()),  HttpStatus.UNAUTHORIZED);
+
+    }
+
+    @ExceptionHandler(ReportNotFoundException.class)
+    public ResponseEntity<?> reportNotFoundHandler(ReportNotFoundException e){
+        return new ResponseEntity<>(new ExceptionDto(e.getMessage()),  HttpStatus.BAD_REQUEST);
+
+    }
+
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<?> securityExceptionHandler(SecurityException e){
         return new ResponseEntity<>(new ExceptionDto(e.getMessage()),  HttpStatus.UNAUTHORIZED);
 
     }
