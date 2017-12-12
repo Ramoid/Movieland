@@ -135,4 +135,18 @@ class QueryConfig {
                 "where movie_id=:movieId " +
                 "and country_id not in (:countryIds)";
     }
+
+    @Bean
+    public String inserMovieRateSql(){
+        return "insert ignore into movies.movie_rates(movie_id,user_id,rate) " +
+                "values (?,?,?)";
+    }
+
+    @Bean
+    public String getMoviesRatingsSql(){
+        return "select movie_id,round(sum(rate)/count(*) ,1) rating,count(*) cnt " +
+                "from  movies.movie_rates mr " +
+                "group by movie_id";
+    }
+
 }

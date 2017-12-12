@@ -6,12 +6,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ser.FilterProvider;
 import com.fasterxml.jackson.databind.ser.impl.SimpleBeanPropertyFilter;
 import com.fasterxml.jackson.databind.ser.impl.SimpleFilterProvider;
-import com.solovey.movieland.entity.Genre;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.dao.enums.Currency;
-import com.solovey.movieland.web.util.security.entity.LoginRequest;
-import com.solovey.movieland.web.util.security.exceptions.BadLoginRequestException;
+import com.solovey.movieland.web.security.entity.LoginRequest;
+import com.solovey.movieland.web.security.exceptions.BadLoginRequestException;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,6 +42,20 @@ public class JsonJacksonConverter {
             log.error("Error retriveving currency rates from json {}", e);
             throw new RuntimeException(e);
         }
+
+    }
+
+    public double extractRate(String jsonRate){
+
+        JsonNode root = null;
+        try {
+            root = objectMapper.readTree(jsonRate);
+            return root.at("/rating").asDouble();
+        } catch (IOException e) {
+            log.error("Error retriveving rating from json {}", e);
+            throw new RuntimeException(e);
+        }
+
 
     }
 

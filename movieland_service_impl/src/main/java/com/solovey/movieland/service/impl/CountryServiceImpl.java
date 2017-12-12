@@ -5,6 +5,8 @@ import com.solovey.movieland.dao.CountryDao;
 import com.solovey.movieland.entity.Country;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.service.CountryService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class CountryServiceImpl implements CountryService {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final CountryDao countryDao;
 
@@ -42,9 +46,16 @@ public class CountryServiceImpl implements CountryService {
     public void enrichMovieWithCountries(Movie movie) {
         Map<Integer, String> countriesMap = countryDao.getAll().stream().collect(Collectors.toMap(x -> x.getId(), x -> x.getName()));
 
-        for (Country movieCountry : movie.getCountries()) {
-            movieCountry.setName(countriesMap.get(movieCountry.getId()));
-        }
+            for (Country movieCountry : movie.getCountries()) {
+                if (Thread.currentThread().isInterrupted()) {
+                    log.info("enrichMovieWithCountries was interrupted due to timeout");
+                    break;
+                }
+                else {
+                    movieCountry.setName(countriesMap.get(movieCountry.getId()));
+                }
+            }
+
     }
 
     @Override

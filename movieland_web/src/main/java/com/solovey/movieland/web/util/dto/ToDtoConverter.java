@@ -43,17 +43,19 @@ public class ToDtoConverter {
             movieDto.setRating(movie.getRating());
             movieDto.setYearOfRelease(movie.getYearOfRelease());
 
-            for (Review review: movie.getReviews()){
-                ReviewDto reviewDto = new ReviewDto();
-                reviewDto.setId(review.getId());
-                reviewDto.setText(review.getText());
-                UserDto userDto = new UserDto();
-                userDto.setId(review.getUser().getId());
-                userDto.setNickname(review.getUser().getNickname());
-                reviewDto.setUser(userDto);
-                reviewDtos.add(reviewDto);
+            if ( movie.getReviews()!=null) {
+                for (Review review : movie.getReviews()) {
+                    ReviewDto reviewDto = new ReviewDto();
+                    reviewDto.setId(review.getId());
+                    reviewDto.setText(review.getText());
+                    UserDto userDto = new UserDto();
+                    userDto.setId(review.getUser().getId());
+                    userDto.setNickname(review.getUser().getNickname());
+                    reviewDto.setUser(userDto);
+                    reviewDtos.add(reviewDto);
+                }
+                movieDto.setReviews(reviewDtos);
             }
-            movieDto.setReviews(reviewDtos);
 
         return movieDto;
     }

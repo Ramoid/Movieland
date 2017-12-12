@@ -58,6 +58,7 @@ public class JdbcMovieDao implements MovieDao {
         long startTime = System.currentTimeMillis();
 
         List<Movie> movies = jdbcTemplate.query(queryGenerator.addSorting(getAllMoviesSql, sortType), MOVIE_ROW_MAPPER);
+
         log.info("Finish query to get all movies from DB. It took {} ms", System.currentTimeMillis() - startTime);
         return movies;
     }

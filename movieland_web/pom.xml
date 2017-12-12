@@ -34,6 +34,19 @@
 
     <dependencies>
 
+        <!-- java mail API -->
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
+
+        <!-- javabeans activation framework -->
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>javax.activation-api</artifactId>
+        </dependency>
+
+
         <!-- jBCrypt -->
         <dependency>
             <groupId>de.svenkubiak</groupId>
