@@ -1,20 +1,13 @@
 package com.solovey.movieland.web.controller;
 
 
-import com.solovey.movieland.dao.enums.UserRole;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.entity.User;
 import com.solovey.movieland.service.ReviewService;
-import com.solovey.movieland.service.UserService;
 import com.solovey.movieland.web.util.json.JsonJacksonConverter;
-import com.solovey.movieland.web.security.AuthenticationService;
 import com.solovey.movieland.web.security.entity.PrincipalUser;
-import com.solovey.movieland.web.security.entity.UserToken;
 import org.junit.Test;
 import org.springframework.test.web.servlet.MockMvc;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.mock;

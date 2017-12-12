@@ -3,7 +3,7 @@ package com.solovey.movieland.web.util.json;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.dao.enums.Currency;
-import com.solovey.movieland.web.util.security.entity.LoginRequest;
+import com.solovey.movieland.web.security.entity.LoginRequest;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-<configuration>
+<configuration debug="true">
     <appender name="ROLLING" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!--<filter class="ch.qos.logback.classic.filter.LevelFilter">
             <level>DEBUG</level>
@@ -32,10 +32,29 @@
         </encoder>
     </appender>
 
+    <appender name="EMAIL" class="ch.qos.logback.classic.net.SMTPAppender">
+        <smtpHost>smtp.ukr.net</smtpHost>
+        <smtpPort>465</smtpPort>
+        <SSL>true</SSL>
+        <username>smtpappender@ukr.net</username>
+        <password>appender666</password>
+
+        <to>sergeysolovey1981@gmail.com</to>
+        <from>smtpappender@ukr.net</from>
+        <subject>Lg-03: %logger{20} - %m</subject>
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>%date %-5level %logger{35} - %message%n</pattern>
+        </layout>
+        <cyclicBufferTracker class="ch.qos.logback.core.spi.CyclicBufferTracker">
+            <bufferSize>1</bufferSize>
+        </cyclicBufferTracker>
+    </appender>
+
 
     <root level="DEBUG">
         <appender-ref ref="ROLLING"/>
         <appender-ref ref="STDOUT"/>
+        <appender-ref ref="EMAIL" />
     </root>
 
 
