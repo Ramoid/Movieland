@@ -34,7 +34,7 @@ public class ReportingServiceImpl implements ReportingService {
 
     @Autowired
     @Qualifier("fixedThreadPoolExecutor")
-    private ExecutorService singleThreadPoolExecutor;
+    private ExecutorService fixedThreadPoolExecutor;
 
     @Autowired
     private ReportingDao reportingDao;
@@ -144,7 +144,7 @@ public class ReportingServiceImpl implements ReportingService {
                 reportingDao.removeReportMetadata(reportId);
                 log.info("Report {} has been removed", report.getReportId());
             } else {
-                singleThreadPoolExecutor.submit(() -> {
+                fixedThreadPoolExecutor.submit(() -> {
                     try {
                         report.getCountDownLatch().await();
                         deleteReportFile(report);
@@ -179,7 +179,7 @@ public class ReportingServiceImpl implements ReportingService {
                 if (report == null) {
                     i++;
                 } else {
-                    singleThreadPoolExecutor.submit(() -> reportGenerationTask(report));
+                    fixedThreadPoolExecutor.submit(() -> reportGenerationTask(report));
                 }
             }
 
