@@ -4,25 +4,23 @@ package com.solovey.movieland.entity.reporting;
 public enum ReportOutputType {
     PDF("pdf"),
     XLSX("xlsx");
-    private final String reportOutputType;
+    private final String outputTypeName;
 
-    ReportOutputType(String reportOutputType) {
-        this.reportOutputType = reportOutputType;
+    ReportOutputType(String outputTypeName) {
+        this.outputTypeName = outputTypeName;
     }
 
-    public static ReportOutputType getReportOutputType(String reportType) {
+    public static ReportOutputType getReportOutputType(String inReportOutputType) {
 
-        for (ReportOutputType reportOutputType1 : ReportOutputType.values()) {
-            if (reportOutputType1.reportOutputType.equalsIgnoreCase(reportType)) {
-                return reportOutputType1;
+        for (ReportOutputType reportOutputType : ReportOutputType.values()) {
+            if (reportOutputType.outputTypeName.equalsIgnoreCase(inReportOutputType)) {
+                return reportOutputType;
             }
         }
-        throw new IllegalArgumentException("Wrong report output type");
-        // UAH in case when wrong parameter value
-        //return UserRole.UAH;
+        throw new IllegalArgumentException("Wrong report output type " + inReportOutputType);
     }
 
-    public String getReportOutputType() {
-        return reportOutputType;
+    public String getOutputTypeName() {
+        return outputTypeName;
     }
 }

@@ -5,7 +5,10 @@ import com.solovey.movieland.entity.reporting.*;
 import com.solovey.movieland.service.ReportingService;
 import com.solovey.movieland.service.impl.generator.EmailSender;
 import com.solovey.movieland.service.impl.generator.ReportGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -15,19 +18,21 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Service
 public class ReportingServiceImpl implements ReportingService {
 
+    private final Logger log = LoggerFactory.getLogger(getClass());
+
     private Queue<Report> reportRequests = new ConcurrentLinkedQueue<>();
-    private Map<Integer, Report> reportsMetadataCache = new ConcurrentHashMap<>();
-    private AtomicInteger lastReportId = new AtomicInteger();
+    private Map<String, Report> reportsMetadataCache = new ConcurrentHashMap<>();
+
     private ReentrantReadWriteLock lock = new ReentrantReadWriteLock();
 
     @Autowired
-    private ExecutorService threadPool;
+    @Qualifier("singleThreadPoolExecutor")
+    private ExecutorService singleThreadPoolExecutor;
 
     @Autowired
     private ReportingDao reportingDao;
@@ -40,16 +45,16 @@ public class ReportingServiceImpl implements ReportingService {
 
     @Override
     public void addReportRequest(Report report) {
-        report.setReportId(lastReportId.incrementAndGet());
+        report.setReportId(UUID.randomUUID().toString());
         reportRequests.add(report);
     }
 
     @Override
-    public ReportState getReportStatus(int reportId, int userId) {
+    public ReportState getReportStatus(String reportId, int userId) {
         lock.readLock().lock();
         try {
             Report report = reportsMetadataCache.get(reportId);
-            if (report != null && report.getUserId() == userId) {
+            if (report != null) {
                 if (report.getUserId() == userId) {
                     return report.getReportState();
                 } else {
@@ -57,7 +62,7 @@ public class ReportingServiceImpl implements ReportingService {
                 }
             }
             for (Report report1 : reportRequests) {
-                if (report1.getReportId() == reportId) {
+                if (report1.getReportId().equals(reportId)) {
                     if (report1.getUserId() == userId) {
                         return ReportState.NEW;
                     } else {
@@ -73,7 +78,6 @@ public class ReportingServiceImpl implements ReportingService {
 
     @Override
     public List<Report> getUserReports(int userId) {
-
         List<Report> userReports = new ArrayList<>();
 
         lock.readLock().lock();
@@ -97,7 +101,7 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     @Override
-    public Report getReportMetadata(int reportId, int userId) {
+    public Report getReportMetadata(String reportId, int userId) {
         Report report = reportsMetadataCache.get(reportId);
         if (report != null && report.getReportState() == ReportState.READY && report.getUserId() == userId) {
             return report;
@@ -106,18 +110,19 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     @Override
-    public void deleteReport(int reportId, int userId) {
+    public void deleteReport(String reportId, int userId) {
         lock.writeLock().lock();
         try {
             Iterator<Report> iterator = reportRequests.iterator();
             while (iterator.hasNext()) {
                 Report report = iterator.next();
-                if (report.getReportId() == reportId) {
+                if (report.getReportId().equals(reportId)) {
                     if (report.getUserId() == userId) {
                         iterator.remove();
+                        log.info("Report {} has been removed from queue", report.getReportType().getTypeName());
                         return;
                     } else {
-                        throw new RuntimeException("You cannot remove this report");
+                        throw new SecurityException("You cannot remove this report");
                     }
                 }
             }
@@ -128,28 +133,25 @@ public class ReportingServiceImpl implements ReportingService {
         Report report = reportsMetadataCache.get(reportId);
         if (report != null) {
             if (report.getUserId() != userId) {
-                throw new RuntimeException("You cannot remove this report");
+                throw new SecurityException("You cannot remove this report");
             }
             if (report.getReportState() != ReportState.IN_PROGRESS) {
                 reportsMetadataCache.remove(reportId);
                 deleteReportFile(report);
                 reportingDao.removeReportMetadata(reportId);
+                log.info("Report {} has been removed", report.getReportType().getTypeName());
             } else {
-                Thread deleteTask = new Thread(() -> {
-                    while (true) {
-                        if (report.getReportState() != ReportState.IN_PROGRESS) {
-                            deleteReportFile(report);
-                            reportingDao.removeReportMetadata(reportId);
-                            return;
-                        }
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            return;
+                singleThreadPoolExecutor.submit(() -> {
+                    while (report.getReportState() == ReportState.IN_PROGRESS) {
+                        if (Thread.currentThread().isInterrupted()) {
+                            break;
                         }
                     }
+                    deleteReportFile(report);
+                    reportingDao.removeReportMetadata(reportId);
+
                 });
-                deleteTask.start();
+
             }
         }
 
@@ -157,59 +159,61 @@ public class ReportingServiceImpl implements ReportingService {
     }
 
     private void deleteReportFile(Report report) {
-        String fileName = "reports/Report" + report.getReportId() + "." +
-                report.getReportOutputType().getReportOutputType();
+        String fileName = report.getPath();
         File file = new File(fileName);
         file.delete();
     }
 
-    @Scheduled(fixedDelayString = "${reporting.sheduler.interval}", initialDelayString = "${reporting.sheduler.interval}")
+    @Scheduled(fixedDelayString = "${reporting.sheduler.interval}",
+            initialDelayString = "${reporting.sheduler.interval}")
     private void processRequests() {
         lock.writeLock().lock();
+        int i = 0;
         try {
-            while (true) {
+            while (i == 0) {
                 Report report = reportRequests.poll();
-                if (report != null) {
-                    threadPool.submit(() -> reportGenerationTask(report));
+                if (report == null) {
+                    i++;
                 } else {
-                    break;
+                    singleThreadPoolExecutor.submit(() -> reportGenerationTask(report));
                 }
             }
+
         } finally {
             lock.writeLock().unlock();
         }
     }
 
     private void reportGenerationTask(Report report) {
-
         report.setReportState(ReportState.IN_PROGRESS);
         reportsMetadataCache.put(report.getReportId(), report);
-        String reportFileName;
+        String reportFilePath;
 
         if (report.getReportType() == ReportType.TOP_ACTIVE_USERS) {
             List<ReportTopUser> topUsers = reportingDao.getTopUsers();
 
             if (report.getReportOutputType() == ReportOutputType.XLSX) {
-                reportFileName = reportGenerator.generateTopUsersXlsxReport(topUsers, report);
+                reportFilePath = reportGenerator.generateTopUsersXlsxReport(topUsers, report);
             } else {
-                reportFileName = reportGenerator.generateTopUsersPdfReport(topUsers, report);
+                reportFilePath = reportGenerator.generateTopUsersPdfReport(topUsers, report);
             }
         } else {
             List<ReportMovie> movieList = reportingDao.getMoviesForReport(report);
 
             if (report.getReportOutputType() == ReportOutputType.XLSX) {
-                reportFileName = reportGenerator.generateMoviesXlsxReport(movieList, report);
+                reportFilePath = reportGenerator.generateMoviesXlsxReport(movieList, report);
             } else {
-                reportFileName = "";
+                reportFilePath = reportGenerator.generateMoviesPdfReport(movieList, report);
             }
         }
 
-        report.setLink(report.getLink().replace("?", reportFileName));
-        reportingDao.saveReportMetadata(report);
+        report.setPath(reportFilePath);
 
         if (report.getReportState() != ReportState.ERROR) {
             report.setReportState(ReportState.READY);
         }
+
+        reportingDao.saveReportMetadata(report);
         emailSender.sendEmail(report);
 
     }
@@ -218,6 +222,6 @@ public class ReportingServiceImpl implements ReportingService {
     @PostConstruct
     private void init() {
         reportsMetadataCache.putAll(reportingDao.getReportsMetadata());
-        lastReportId.set(reportingDao.getMaxReportId());
+
     }
 }

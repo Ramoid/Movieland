@@ -23,6 +23,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -32,6 +34,7 @@ public class JsonJacksonConverter {
     private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final Pattern datePattern = Pattern.compile("^[\\d]{4}-[\\d]{2}-[\\d]{2}$");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -168,7 +171,7 @@ public class JsonJacksonConverter {
         }
     }
 
-    public Report parseJsonToReport(String jsonReport, PrincipalUser user, String link) {
+    public Report parseJsonToReport(String jsonReport, PrincipalUser user) {
 
         try {
             JsonNode root = objectMapper.readTree(jsonReport);
@@ -178,24 +181,31 @@ public class JsonJacksonConverter {
             Report report = new Report();
             report.setUserId(user.getUserId());
             report.setUserEmail(user.getName());
-            report.setLink(link);
-            String dateFrom = root.at("/dateFrom").asText();
-            matcher = datePattern.matcher(dateFrom);
-            if (matcher.matches()) {
-                report.setDateFrom(java.sql.Date.valueOf(dateFrom));
+
+            report.setReportType(ReportType.getTypeName(root.at("/reportType").asText()));
+            if (report.getReportType() == ReportType.ADDED_DURING_PERIOD) {
+                String dateFrom = root.at("/dateFrom").asText();
+                matcher = datePattern.matcher(dateFrom);
+                if (matcher.matches()) {
+                    report.setDateFrom(LocalDate.parse(dateFrom, formatter));
+                } else {
+                    throw new RuntimeException("dateFrom should be provided");
+                }
+                String dateTo = root.at("/dateTo").asText();
+                matcher = datePattern.matcher(dateTo);
+                if (matcher.matches()) {
+                    report.setDateTo(LocalDate.parse(dateTo, formatter));
+                }else {
+                    throw new RuntimeException("dateTo should be provided");
+                }
             }
-            String dateTo = root.at("/dateTo").asText();
-            matcher = datePattern.matcher(dateTo);
-            if (matcher.matches()) {
-                report.setDateTo(java.sql.Date.valueOf(dateTo));
-            }
-            report.setReportType(ReportType.getReportType(root.at("/reportType").asText()));
             report.setReportOutputType(ReportOutputType.getReportOutputType(root.at("/reportOutputType").asText()));
             report.setReportState(ReportState.NEW);
 
             return report;
         } catch (IOException e) {
-            log.error("Error parsing incoming json{} exception {}", jsonReport, e);
+            String message = String.format("Error parsing incoming json %s exception", jsonReport);
+            log.error(message, e);
             throw new RuntimeException("parseJsonToReport Error parsing incoming json " + jsonReport, e);
         }
 

@@ -158,20 +158,18 @@ class QueryConfig {
                 " from movies.movie m" +
                 " join movies.genre_mapping gm on m.movie_id=gm.movie_id " +
                 " join movies.genre g on gm.genre_id=g.genre_id " +
-                " left join movies.review r on m.movie_id=r.movie_id " +
-                " where m.added_date between ? and ?" +
-                " group by m.movie_id";
+                " left join movies.review r on m.movie_id=r.movie_id ";
     }
 
     @Bean
     public String saveReportMetadataSql() {
-        return "insert into movies.reports(report_id,user_id,link,report_type,report_output_type,date_from,date_to) " +
-                "values(?,?,?,?,?,?,?)";
+        return "insert into movies.reports(report_id,user_id,path,report_type,report_output_type,date_from,date_to,report_state) " +
+                "values(:reportId,:userId,:path,:reportType,:reportOutputType,:dateFrom,:dateTo,:reportState)";
     }
 
     @Bean
     public String getReportsMetadataSql() {
-        return "select report_id,user_id,link,report_type,report_output_type,date_from,date_to from movies.reports";
+        return "select report_id,user_id,path,report_type,report_output_type,date_from,date_to,report_state from movies.reports";
     }
     @Bean
     public String getMaxReportIdSql() {

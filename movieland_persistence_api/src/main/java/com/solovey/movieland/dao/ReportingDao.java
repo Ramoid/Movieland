@@ -13,11 +13,9 @@ public interface ReportingDao {
 
     void saveReportMetadata(Report report);
 
-    Map<Integer, Report> getReportsMetadata();
+    Map<String, Report> getReportsMetadata();
 
-    int getMaxReportId();
-
-    void removeReportMetadata(int reportId);
+    void removeReportMetadata(String reportId);
 
     List<ReportTopUser> getTopUsers();
 }

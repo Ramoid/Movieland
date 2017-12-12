@@ -1,20 +1,20 @@
-package com.solovey.movieland.entity.reporting;
+package com.solovey.movieland.web.util.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.solovey.movieland.entity.reporting.ReportOutputType;
+import com.solovey.movieland.entity.reporting.ReportState;
+import com.solovey.movieland.entity.reporting.ReportType;
 
 import java.time.LocalDate;
 
-public class Report {
+public class ReportDto {
     private LocalDate dateFrom;
     private LocalDate dateTo;
     private ReportOutputType reportOutputType;
     private ReportType reportType;
     private String path;
-    private int userId;
     private ReportState reportState;
     private String reportId;
-    private String userEmail;
 
     public LocalDate getDateFrom() {
         return dateFrom;
@@ -56,13 +56,7 @@ public class Report {
         this.path = path;
     }
 
-    public Integer getUserId() {
-        return userId;
-    }
 
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
 
     public ReportState getReportState() {
         return reportState;
@@ -72,9 +66,7 @@ public class Report {
         this.reportState = reportState;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+
 
     public String getReportId() {
         return reportId;
@@ -84,13 +76,6 @@ public class Report {
         this.reportId = reportId;
     }
 
-    public String getUserEmail() {
-        return userEmail;
-    }
-
-    public void setUserEmail(String userEmail) {
-        this.userEmail = userEmail;
-    }
 
     @Override
     public String toString() {
@@ -100,7 +85,6 @@ public class Report {
                 ", reportOutputType=" + reportOutputType +
                 ", reportType=" + reportType +
                 ", path='" + path + '\'' +
-                ", userId=" + userId +
                 ", reportState=" + reportState +
                 ", reportId=" + reportId +
                 '}';

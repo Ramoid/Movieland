@@ -6,25 +6,24 @@ public enum ReportState {
     IN_PROGRESS("InProgress"),
     NEW("New"),
     ERROR("Error");
-    private final String reportState;
+    private final String stateName;
 
-    ReportState(String reportState) {
-        this.reportState = reportState;
+    ReportState(String stateName) {
+        this.stateName = stateName;
     }
 
-    public static ReportState getReportState(String reportType) {
+    public static ReportState getReportState(String inReportState) {
 
-        for (ReportState reportState1 : ReportState.values()) {
-            if (reportState1.reportState.equalsIgnoreCase(reportType)) {
-                return reportState1;
+        for (ReportState reportState : ReportState.values()) {
+            if (reportState.stateName.equalsIgnoreCase(inReportState)) {
+                return reportState;
             }
         }
-        throw new IllegalArgumentException("Wrong report state");
-        // UAH in case when wrong parameter value
-        //return UserRole.UAH;
+        throw new IllegalArgumentException("Wrong report state " + inReportState);
+
     }
 
-    public String getReportState() {
-        return reportState;
+    public String getStateName() {
+        return stateName;
     }
 }

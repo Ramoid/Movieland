@@ -2,15 +2,14 @@ package com.solovey.movieland.service.impl.config;
 
 
 import com.solovey.movieland.dao.jdbc.config.DataConfig;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.io.*;
 import java.util.Properties;
-import java.util.concurrent.SynchronousQueue;
-import java.util.concurrent.ThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.*;
 
 
 @Configuration
@@ -24,11 +23,18 @@ public class ServiceConfig {
     private int threadPoolSize;
 
     @Bean
-    public ThreadPoolExecutor threadPoolExecutor() {
+    @Qualifier("cachedThreadPoolExecutor")
+    public ExecutorService cachedThreadPoolExecutor() {
         return new ThreadPoolExecutor(0, threadPoolSize,
                 60L, TimeUnit.SECONDS,
                 new SynchronousQueue<Runnable>());
 
+    }
+
+    @Bean
+    @Qualifier("singleThreadPoolExecutor")
+    public ExecutorService singleThreadPoolExecutor() {
+        return Executors.newSingleThreadExecutor();
     }
 
     @Bean

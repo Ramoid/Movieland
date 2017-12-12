@@ -2,6 +2,7 @@ package com.solovey.movieland.web.util.dto;
 
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.entity.Review;
+import com.solovey.movieland.entity.reporting.Report;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,6 +28,23 @@ public class ToDtoConverter {
         }
         return movieDtos;
     }
+
+    public List<ReportDto> convertReportsToReportsDto(List<Report> reportList){
+        List<ReportDto> reportDtos = new ArrayList<>();
+        for(Report report : reportList){
+            ReportDto reportDto = new ReportDto();
+            reportDto.setDateFrom(report.getDateFrom());
+            reportDto.setDateTo(report.getDateTo());
+            reportDto.setPath(report.getPath());
+            reportDto.setReportId(report.getReportId());
+            reportDto.setReportOutputType(report.getReportOutputType());
+            reportDto.setReportType(report.getReportType());
+            reportDto.setReportState(report.getReportState());
+            reportDtos.add(reportDto);
+        }
+        return reportDtos;
+    }
+
     public MovieDto convertMovietoMovieDto(Movie movie){
 
             List<ReviewDto> reviewDtos = new ArrayList<>();

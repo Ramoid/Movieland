@@ -15,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +25,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class JsonJacksonConverterTest {
+    private  final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 
 
     @Test
@@ -93,12 +96,12 @@ public class JsonJacksonConverterTest {
         String actualJson = "{\"dateFrom\" : \"2000-01-01\",\"dateTo\" : \"2000-01-20\",\"reportType\" : \"addedDuringPeriod\",\"reportOutputType\" : \"pdf\"}";
         PrincipalUser user = new PrincipalUser("user@mail.com",1);
         JsonJacksonConverter converter = new JsonJacksonConverter();
-        String link = "link";
-        Report report = converter.parseJsonToReport(actualJson, user, link);
+
+        Report report = converter.parseJsonToReport(actualJson, user);
         assertEquals(ReportType.ADDED_DURING_PERIOD, report.getReportType());
         assertEquals(ReportOutputType.PDF, report.getReportOutputType());
-        assertEquals(java.sql.Date.valueOf("2000-01-01"),report.getDateFrom());
-        assertEquals(java.sql.Date.valueOf("2000-01-20"),report.getDateTo());
+        assertEquals(LocalDate.parse("2000-01-01",formatter),report.getDateFrom());
+        assertEquals(LocalDate.parse("2000-01-20",formatter),report.getDateTo());
 
     }
 

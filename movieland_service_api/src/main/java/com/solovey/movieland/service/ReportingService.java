@@ -10,12 +10,12 @@ public interface ReportingService {
 
     void addReportRequest(Report reportParams);
 
-    ReportState getReportStatus(int reportId, int userId);
+    ReportState getReportStatus(String reportId, int userId);
 
     List<Report> getUserReports(int userId);
 
-    Report getReportMetadata(int reportId, int userId);
+    Report getReportMetadata(String reportId, int userId);
 
-    void deleteReport(int reportId, int userId);
+    void deleteReport(String reportId, int userId);
 
 }
