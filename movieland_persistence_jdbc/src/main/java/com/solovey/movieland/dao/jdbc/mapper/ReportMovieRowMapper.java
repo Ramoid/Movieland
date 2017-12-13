@@ -16,8 +16,8 @@ public class ReportMovieRowMapper implements RowMapper<ReportMovie> {
         movie.setDescription(resultSet.getString("description"));
         movie.setGenre(resultSet.getString("genre"));
         movie.setPrice(resultSet.getDouble("price"));
-        movie.setAddedDate(resultSet.getDate("added_date"));
-        movie.setModifiedDate(resultSet.getDate("modified_date"));
+        movie.setAddedDate(resultSet.getDate("added_date").toLocalDate());
+        movie.setModifiedDate(resultSet.getDate("modified_date").toLocalDate());
         movie.setRating(resultSet.getDouble("rating"));
         movie.setReviewsCount(resultSet.getInt("reviews_count"));
         return movie;

@@ -1,7 +1,7 @@
 package com.solovey.movieland.entity.reporting;
 
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class ReportMovie {
     private int movieId;
@@ -9,8 +9,8 @@ public class ReportMovie {
     private String description;
     private String genre;
     private double price;
-    private Date addedDate;
-    private Date modifiedDate;
+    private LocalDate addedDate;
+    private LocalDate modifiedDate;
     private double rating;
     private int reviewsCount;
 
@@ -54,19 +54,19 @@ public class ReportMovie {
         this.price = price;
     }
 
-    public Date getAddedDate() {
+    public LocalDate getAddedDate() {
         return addedDate;
     }
 
-    public void setAddedDate(Date addedDate) {
+    public void setAddedDate(LocalDate addedDate) {
         this.addedDate = addedDate;
     }
 
-    public Date getModifiedDate() {
+    public LocalDate getModifiedDate() {
         return modifiedDate;
     }
 
-    public void setModifiedDate(Date modifiedDate) {
+    public void setModifiedDate(LocalDate modifiedDate) {
         this.modifiedDate = modifiedDate;
     }
 
