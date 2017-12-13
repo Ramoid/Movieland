@@ -3,7 +3,11 @@ package com.solovey.movieland.web.util.json;
 import com.solovey.movieland.entity.Movie;
 import com.solovey.movieland.entity.Review;
 import com.solovey.movieland.dao.enums.Currency;
+import com.solovey.movieland.entity.reporting.Report;
+import com.solovey.movieland.entity.reporting.ReportOutputType;
+import com.solovey.movieland.entity.reporting.ReportType;
 import com.solovey.movieland.web.security.entity.LoginRequest;
+import com.solovey.movieland.web.security.entity.PrincipalUser;
 import com.solovey.movieland.web.util.dto.MovieDto;
 import org.junit.Test;
 
@@ -11,6 +15,8 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,6 +25,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 
 public class JsonJacksonConverterTest {
+    private  final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-d");
 
 
     @Test
@@ -63,8 +70,8 @@ public class JsonJacksonConverterTest {
     }
 
     @Test
-    public void parseLoginJson(){
-        String actualJson="{\"email\":\"ronald.reynolds66@example.com\",\"password\":\"paco\"}";
+    public void parseLoginJson() {
+        String actualJson = "{\"email\":\"ronald.reynolds66@example.com\",\"password\":\"paco\"}";
         JsonJacksonConverter converter = new JsonJacksonConverter();
         LoginRequest loginRequest = converter.parseLoginJson(actualJson);
         assertEquals("ronald.reynolds66@example.com", loginRequest.getEmail());
@@ -81,6 +88,20 @@ public class JsonJacksonConverterTest {
         assertEquals(1, review.getMovieId());
         assertEquals("Очень понравилось!", review.getText());
         assertEquals(1, review.getUser().getId());
+
+    }
+
+    @Test
+    public void testParseJsonToReport() {
+        String actualJson = "{\"dateFrom\" : \"2000-01-01\",\"dateTo\" : \"2000-01-20\",\"reportType\" : \"addedDuringPeriod\",\"reportOutputType\" : \"pdf\"}";
+        PrincipalUser user = new PrincipalUser("user@mail.com",1);
+        JsonJacksonConverter converter = new JsonJacksonConverter();
+
+        Report report = converter.parseJsonToReport(actualJson, user);
+        assertEquals(ReportType.ADDED_DURING_PERIOD, report.getReportType());
+        assertEquals(ReportOutputType.PDF, report.getReportOutputType());
+        assertEquals(LocalDate.parse("2000-01-01",formatter),report.getDateFrom());
+        assertEquals(LocalDate.parse("2000-01-20",formatter),report.getDateTo());
 
     }
 

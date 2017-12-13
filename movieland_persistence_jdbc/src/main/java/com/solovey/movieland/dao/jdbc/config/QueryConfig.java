@@ -78,13 +78,13 @@ class QueryConfig {
     }
 
     @Bean
-    public String insertReviewSql(){
+    public String insertReviewSql() {
         return "insert into movies.review(movie_id,user_id,rtext) " +
                 "values(:movieId,:userId,:text)";
     }
 
     @Bean
-    public String gerUserRolesSql(){
+    public String gerUserRolesSql() {
         return "select role_name " +
                 "from movies.user_roles u, movies.roles r " +
                 "where r.role_id=u.role_id" +
@@ -92,25 +92,25 @@ class QueryConfig {
     }
 
     @Bean
-    public String insertMovieSql(){
+    public String insertMovieSql() {
         return "insert into movies.movie(movie_name_russian,movie_name_native,movie_year,description,rating,price,link) " +
                 "values(:nameRussian,:nameNative,:movieYear,:descriprion,:rating,:price,:picturePath)";
     }
 
     @Bean
-    public String insertGenreMappingSql(){
+    public String insertGenreMappingSql() {
         return "insert ignore into movies.genre_mapping(movie_id,genre_id) " +
                 "values(?,?)";
     }
 
     @Bean
-    public String insertCountryMappingSql(){
+    public String insertCountryMappingSql() {
         return "insert ignore into movies.country_mapping(movie_id,country_id) " +
                 "values(?,?)";
     }
 
     @Bean
-    public String updateMovieSql(){
+    public String updateMovieSql() {
         return "update movies.movie " +
                 "set movie_name_russian=ifnull(:nameRussian,movie_name_russian)," +
                 "movie_name_native=ifnull(:nameNative,movie_name_native)," +
@@ -123,30 +123,72 @@ class QueryConfig {
     }
 
     @Bean
-    public String deleteGenreMappingsByIdsSql(){
+    public String deleteGenreMappingsByIdsSql() {
         return "delete from movies.genre_mapping " +
                 "where movie_id=:movieId " +
                 "and genre_id not in (:genreIds)";
     }
 
     @Bean
-    public String deleteCountryMappingsByIdsSql(){
+    public String deleteCountryMappingsByIdsSql() {
         return "delete from movies.country_mapping " +
                 "where movie_id=:movieId " +
                 "and country_id not in (:countryIds)";
     }
 
     @Bean
-    public String inserMovieRateSql(){
+    public String inserMovieRateSql() {
         return "insert ignore into movies.movie_rates(movie_id,user_id,rate) " +
                 "values (?,?,?)";
     }
 
     @Bean
-    public String getMoviesRatingsSql(){
+    public String getMoviesRatingsSql() {
         return "select movie_id,round(sum(rate)/count(*) ,1) rating,count(*) cnt " +
                 "from  movies.movie_rates mr " +
                 "group by movie_id";
+    }
+
+    @Bean
+    public String getMoviesForReportSql() {
+        return "select m.movie_id,movie_name_native as title,description," +
+                " GROUP_CONCAT(DISTINCT g.genre_name ORDER BY g.genre_id ASC SEPARATOR ',') AS genre," +
+                " price,added_date,modified_date,rating," +
+                " count(distinct r.user_id) as reviews_count" +
+                " from movies.movie m" +
+                " join movies.genre_mapping gm on m.movie_id=gm.movie_id " +
+                " join movies.genre g on gm.genre_id=g.genre_id " +
+                " left join movies.review r on m.movie_id=r.movie_id ";
+    }
+
+    @Bean
+    public String saveReportMetadataSql() {
+        return "insert into movies.reports(report_id,user_id,path,report_type,report_output_type,date_from,date_to,report_state) " +
+                "values(:reportId,:userId,:path,:reportType,:reportOutputType,:dateFrom,:dateTo,:reportState)";
+    }
+
+    @Bean
+    public String getReportsMetadataSql() {
+        return "select report_id,user_id,path,report_type,report_output_type,date_from,date_to,report_state from movies.reports";
+    }
+    @Bean
+    public String getMaxReportIdSql() {
+        return "select ifnull(max(report_id),0) from movies.reports";
+    }
+
+    @Bean
+    public String removeReportMetadataSql() {
+        return "delete from movies.reports where report_id=?";
+    }
+
+    @Bean
+    public String getTopUsersSql(){
+        return "select u.user_id,u.email,count(distinct r.review_id) reviews_count,ifnull(round(avg(mr.rate),1),0) avg_rating " +
+                "from movies.users u join movies.review r on  u.user_id=r.user_id " +
+                "left join movies.movie_rates mr on u.user_id=mr.user_id " +
+                "group by u.user_id " +
+                "order by reviews_count desc " +
+                "limit 5";
     }
 
 }
