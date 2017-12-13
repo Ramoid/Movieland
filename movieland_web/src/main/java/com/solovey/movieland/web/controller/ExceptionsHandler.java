@@ -40,9 +40,9 @@ public class ExceptionsHandler {
 
     }
 
-   /* @ExceptionHandler(RuntimeException.class)
+    @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<?> runtimeExceptionHandler(RuntimeException e){
         return new ResponseEntity<>(new ExceptionDto(e.getMessage()),  HttpStatus.INTERNAL_SERVER_ERROR);
 
-    }*/
+    }
 }

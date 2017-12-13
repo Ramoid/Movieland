@@ -57,11 +57,11 @@ public class ReportGenerator {
             CellStyle dateStyle = book.createCellStyle();
             dateStyle.setDataFormat(format.getFormat("dd.mm.yyyy"));
             cell.setCellStyle(dateStyle);
-            cell.setCellValue(movie.getAddedDate());
+            cell.setCellValue(movie.getAddedDate().toString());
 
             cell = row.createCell(cellNum++);
             cell.setCellStyle(dateStyle);
-            cell.setCellValue(movie.getModifiedDate());
+            cell.setCellValue(movie.getModifiedDate().toString());
 
             cell = row.createCell(cellNum++);
             cell.setCellValue(movie.getRating());
